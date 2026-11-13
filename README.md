@@ -6,7 +6,7 @@
 
 An AI-powered career intelligence and skill development platform that transforms skill assessments, resume analysis, coding practice, and career requirements into a personalized, evidence-driven learning journey.
 
-**Team NEXORA** | **Presented by SARATHKUMAR R**
+ **Presented by SARATHKUMAR R**
 
 </p>
 
@@ -764,3 +764,5 @@ Dataset ownership, attribution, and licensing remain subject to their respective
 **Discover. Analyse. Learn. Practise. Improve.**
 
 </p>
+PPT link:
+https://docs.google.com/presentation/d/13rtnKyJ7pdvS7HnQQBO4uYyyXTgy6KzV/edit?usp=drivesdk&ouid=110152786672007708719&rtpof=true&sd=true
