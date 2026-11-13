@@ -1,0 +1,283 @@
+{
+  "c0ldsmi1e_resume": {
+    "dataset_name": "C0ldSmi1e/resume-dataset",
+    "source": "https://huggingface.co/datasets/C0ldSmi1e/resume-dataset",
+    "license": "Apache-2.0",
+    "intended_use": "Resume text categorization and domain classification",
+    "skillbridge_features": [
+      "Feature 4 (Skill Gap)",
+      "Feature 5 (Resume Parser)",
+      "Feature 6 (Multi-Job Compatibility)"
+    ],
+    "status": "VALIDATED",
+    "train_rows": 2257,
+    "columns": [
+      "id",
+      "category",
+      "skills",
+      "education",
+      "experience",
+      "text",
+      "html"
+    ],
+    "missing_values": {
+      "id": 0,
+      "category": 0,
+      "skills": 0,
+      "education": 0,
+      "experience": 0,
+      "text": 0,
+      "html": 0
+    },
+    "duplicate_rows": 0,
+    "top_categories": {
+      "BUSINESS-DEVELOPMENT": 118,
+      "FINANCE": 118,
+      "ACCOUNTANT": 117,
+      "FITNESS": 116,
+      "AVIATION": 116,
+      "HEALTHCARE": 115,
+      "CONSULTANT": 115,
+      "SALES": 114,
+      "CHEF": 114,
+      "ENGINEERING": 114
+    },
+    "total_categories": 23,
+    "eval_rows": 200,
+    "leakage_overlap_count": 0,
+    "leakage_percentage": 0.0
+  },
+  "med2425_job_fit": {
+    "dataset_name": "med2425/resume-job-fit-merged-v1",
+    "source": "https://huggingface.co/datasets/med2425/resume-job-fit-merged-v1",
+    "license": "Open Source / HF Community",
+    "intended_use": "Resume-Job description alignment and fit scoring",
+    "skillbridge_features": [
+      "Feature 6 (Multi-Job Compatibility)",
+      "Feature 7 (Job-Readiness Indicator)"
+    ],
+    "status": "VALIDATED",
+    "total_rows": 40009,
+    "columns": [
+      "resume",
+      "jd",
+      "label",
+      "source",
+      "resume_domain",
+      "jd_domain"
+    ],
+    "missing_values": {
+      "resume": 0,
+      "jd": 0,
+      "label": 0,
+      "source": 0,
+      "resume_domain": 0,
+      "jd_domain": 0
+    },
+    "duplicate_rows": 0,
+    "label_distribution": {
+      "No Fit": 30114,
+      "Potential Fit": 6947,
+      "Good Fit": 2948
+    }
+  },
+  "keerthanshetty_skills": {
+    "dataset_name": "keerthanshetty/resume-skill-extractor-dataset",
+    "source": "https://huggingface.co/datasets/keerthanshetty/resume-skill-extractor-dataset",
+    "license": "MIT",
+    "intended_use": "Token-level and entity-level skill extraction from resume text",
+    "skillbridge_features": [
+      "Feature 2 (Skill Verification)",
+      "Feature 4 (Skill Gap Detection)",
+      "Feature 5 (JD Analyzer)"
+    ],
+    "status": "VALIDATED",
+    "total_rows": 3050,
+    "columns": [
+      "title",
+      "source",
+      "job_description",
+      "summary",
+      "required_skills"
+    ],
+    "missing_values": {
+      "title": 0,
+      "source": 0,
+      "job_description": 0,
+      "summary": 0,
+      "required_skills": 0
+    }
+  },
+  "onet_database": {
+    "dataset_name": "Official O*NET Database (28.0/29.0)",
+    "source": "https://www.onetcenter.org/database.html",
+    "license": "O*NET Open License / Public Domain (U.S. Department of Labor)",
+    "intended_use": "Standardized career taxonomy, skills taxonomy, technology tools, and prerequisite structure",
+    "skillbridge_features": [
+      "Feature 3 (Skill Dependency)",
+      "Feature 6 (Role Compatibility)",
+      "Feature 8 (Career Simulator)",
+      "Feature 9 (Skill Demand)"
+    ],
+    "status": "VALIDATED",
+    "components": {
+      "Occupation Data.txt": {
+        "rows": 1016,
+        "columns": [
+          "O*NET-SOC Code",
+          "Title",
+          "Description"
+        ],
+        "missing": 0,
+        "sample": {
+          "O*NET-SOC Code": "11-1011.00",
+          "Title": "Chief Executives",
+          "Description": "Determine and formulate policies and provide overall direction of companies or private and public sector organizations within guidelines set up by a board of directors or similar governing body. Plan, direct, or coordinate operational activities at the highest level of management with the help of subordinate executives and staff managers."
+        }
+      },
+      "Skills.txt": {
+        "rows": 61110,
+        "columns": [
+          "O*NET-SOC Code",
+          "Element ID",
+          "Element Name",
+          "Scale ID",
+          "Data Value",
+          "N",
+          "Standard Error",
+          "Lower CI Bound",
+          "Upper CI Bound",
+          "Recommend Suppress",
+          "Not Relevant",
+          "Date",
+          "Domain Source"
+        ],
+        "missing": 36435,
+        "sample": {
+          "O*NET-SOC Code": "11-1011.00",
+          "Element ID": "2.A.1.a",
+          "Element Name": "Reading Comprehension",
+          "Scale ID": "IM",
+          "Data Value": 4.12,
+          "N": 8.0,
+          "Standard Error": 0.13,
+          "Lower CI Bound": 3.88,
+          "Upper CI Bound": 4.37,
+          "Recommend Suppress": "N",
+          "Not Relevant": NaN,
+          "Date": "08/2023",
+          "Domain Source": "Analyst"
+        }
+      },
+      "Technology Skills.txt": {
+        "rows": 32384,
+        "columns": [
+          "O*NET-SOC Code",
+          "Example",
+          "Commodity Code",
+          "Commodity Title",
+          "Hot Technology",
+          "In Demand"
+        ],
+        "missing": 0,
+        "sample": {
+          "O*NET-SOC Code": "11-1011.00",
+          "Example": "Adobe Systems Adobe Acrobat",
+          "Commodity Code": 43232202,
+          "Commodity Title": "Document management software",
+          "Hot Technology": "Y",
+          "In Demand": "N"
+        }
+      },
+      "Knowledge.txt": {
+        "rows": 57618,
+        "columns": [
+          "O*NET-SOC Code",
+          "Element ID",
+          "Element Name",
+          "Scale ID",
+          "Data Value",
+          "N",
+          "Standard Error",
+          "Lower CI Bound",
+          "Upper CI Bound",
+          "Recommend Suppress",
+          "Not Relevant",
+          "Date",
+          "Domain Source"
+        ],
+        "missing": 86251,
+        "sample": {
+          "O*NET-SOC Code": "11-1011.00",
+          "Element ID": "2.C.1.a",
+          "Element Name": "Administration and Management",
+          "Scale ID": "IM",
+          "Data Value": 4.78,
+          "N": 28.0,
+          "Standard Error": 0.11,
+          "Lower CI Bound": 4.56,
+          "Upper CI Bound": 5.0,
+          "Recommend Suppress": "N",
+          "Not Relevant": NaN,
+          "Date": "08/2023",
+          "Domain Source": "Incumbent"
+        }
+      }
+    }
+  },
+  "nonameee_matching": {
+    "dataset_name": "nonameee12233/job-resume-matching",
+    "source": "https://huggingface.co/datasets/nonameee12233/job-resume-matching",
+    "license": "MIT",
+    "intended_use": "Bipartite graph matching of resumes to job postings",
+    "skillbridge_features": [
+      "Feature 6 (Multi-Job Compatibility Engine)",
+      "Feature 18 (Gap Priority Optimizer)"
+    ],
+    "status": "PARTIAL",
+    "components": {
+      "matches.csv": {
+        "rows": 122560,
+        "columns": [
+          "candidate_id",
+          "job_id",
+          "final_score",
+          "raw_score",
+          "label_strength",
+          "semantic_score",
+          "skill_score",
+          "position_score",
+          "category_score",
+          "experience_score",
+          "education_score",
+          "candidate_rank",
+          "candidate_rank_pct"
+        ],
+        "missing": 0
+      }
+    }
+  },
+  "mbpp_problems": {
+    "dataset_name": "Google Research MBPP (Mostly Basic Python Problems)",
+    "source": "https://github.com/google-research/google-research/tree/master/mbpp",
+    "license": "Apache-2.0",
+    "intended_use": "Verified Python programming challenges with unit test assertions for practical skill assessment",
+    "skillbridge_features": [
+      "Feature 1 (Assessment Bank)",
+      "Feature 13 (Adaptive Learning)",
+      "Feature 15 (Coding Skill Analyzer)"
+    ],
+    "status": "VALIDATED",
+    "total_problems": 974,
+    "fields_integrity": {
+      "valid_prompts": 974,
+      "valid_solutions": 974,
+      "valid_unit_tests": 974
+    },
+    "sample_problem": {
+      "task_id": 1,
+      "prompt": "Write a function to find the minimum cost path to reach (m, n) from (0, 0) for the given cost matrix cost[][] and a position (m, n) in cost[][].",
+      "test_count": 3
+    }
+  }
+}

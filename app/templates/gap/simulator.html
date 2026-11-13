@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}Career Path &amp; What-If Simulator — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h3 class="fw-bold text-dark mb-1"><i class="bi bi-sliders text-primary me-2"></i>Career Path &amp; What-If Simulator</h3>
+        <p class="text-muted">Explore transition feasibility between technology career roles and simulate the quantitative impact of focused study hours on your job-readiness score.</p>
+    </div>
+
+    <!-- Section 1: Career Path Transition Simulator (Feature 8) -->
+    <div class="card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark mb-0">
+                <i class="bi bi-signpost-2 text-primary me-2"></i>Career Path Transition Simulator
+            </h5>
+            <span class="badge bg-primary-subtle text-primary border">Feature 8</span>
+        </div>
+
+        <!-- Role Selectors -->
+        <form method="GET" action="{{ url_for('gap.simulator') }}" class="row g-3 mb-4 bg-light p-3 rounded border">
+            <div class="col-md-5">
+                <label class="form-label small fw-semibold text-secondary">Current Career / Baseline Profile</label>
+                <select name="current_role" class="form-select" onchange="this.form.submit()">
+                    {% for r in roles %}
+                    <option value="{{ r.title }}" {% if r.title == current_role.title %}selected{% endif %}>{{ r.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
+                <i class="bi bi-arrow-right fs-3 text-muted mt-3 d-none d-md-block"></i>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label small fw-semibold text-secondary">Target Aspirant Career</label>
+                <select name="target_role" class="form-select" onchange="this.form.submit()">
+                    {% for r in roles %}
+                    <option value="{{ r.title }}" {% if r.title == target_role.title %}selected{% endif %}>{{ r.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        <!-- Transition Metrics Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="p-3 bg-light rounded border text-center">
+                    <span class="stat-label">Transferable Strengths</span>
+                    <div class="stat-value text-success">{{ transition.transferable_strengths | length }}</div>
+                    <div class="small text-muted">Shared competencies > 50%</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-light rounded border text-center">
+                    <span class="stat-label">Delta Competency Gaps</span>
+                    <div class="stat-value text-danger">{{ transition.role_specific_gaps | length }}</div>
+                    <div class="small text-muted">Role-specific skills to acquire</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-light rounded border text-center">
+                    <span class="stat-label">Estimated Transition Effort</span>
+                    <div class="stat-value text-primary">{{ transition.total_effort_hours }} hrs</div>
+                    <div class="small text-muted">Across deliberate study units</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-light rounded border text-center">
+                    <span class="stat-label">Projected Timeline</span>
+                    <div class="stat-value text-teal">{{ transition.estimated_weeks }} wks</div>
+                    <div class="small text-muted">At {{ transition.weekly_study_hours }} hrs/week pace</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transferable Strengths vs Gaps -->
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="p-3 bg-success-subtle rounded border border-success-subtle h-100">
+                    <h6 class="fw-bold text-success mb-2"><i class="bi bi-check2-all me-1"></i>Transferable Strengths</h6>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for s in transition.transferable_strengths %}
+                        <span class="badge bg-white text-success border border-success">{{ s }}</span>
+                        {% else %}
+                        <span class="text-muted small">Build baseline competencies in {{ current_role.title }} to unlock transferable skills.</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="p-3 bg-danger-subtle rounded border border-danger-subtle h-100">
+                    <h6 class="fw-bold text-danger mb-2"><i class="bi bi-exclamation-circle me-1"></i>Required Delta Competencies</h6>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for g in transition.role_specific_gaps %}
+                        <span class="badge bg-white text-danger border border-danger">{{ g.skill }} ({{ g.estimated_hours }}h)</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Interactive What-If Career Simulator (Feature 19) -->
+    <div class="card p-4 border-primary">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-calculator text-primary me-2"></i>Interactive What-If Simulation Engine
+                </h5>
+                <span class="small text-muted">Feature 19: Test hypothetical study investment scenarios and project Job-Readiness gains.</span>
+            </div>
+            <span class="badge bg-primary text-white">Interactive Sandbox</span>
+        </div>
+
+        <div class="row g-4">
+            <!-- Controls Form -->
+            <div class="col-lg-5">
+                <div class="p-3 bg-light rounded border">
+                    <h6 class="fw-bold text-dark mb-3">Simulation Parameters</h6>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Target Role for Simulation</label>
+                        <input type="text" id="simRoleInput" class="form-control form-control-sm" value="{{ target_role.title }}" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary d-flex justify-content-between">
+                            <span>Weekly Study Hours:</span>
+                            <span class="fw-bold text-primary" id="studyHoursVal">{{ study_hours }} hrs/wk</span>
+                        </label>
+                        <input type="range" class="form-range" id="studyHoursRange" min="4" max="40" step="2" value="{{ study_hours }}" oninput="document.getElementById('studyHoursVal').innerText = this.value + ' hrs/wk'">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary d-flex justify-content-between">
+                            <span>Study Duration:</span>
+                            <span class="fw-bold text-teal" id="durationWeeksVal">8 Weeks</span>
+                        </label>
+                        <input type="range" class="form-range" id="durationWeeksRange" min="2" max="24" step="2" value="8" oninput="document.getElementById('durationWeeksVal').innerText = this.value + ' Weeks'">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Select Target Skills to Boost:</label>
+                        <div class="border rounded p-2 bg-white" style="max-height: 140px; overflow-y: auto;">
+                            {% for skill in available_skills %}
+                            <div class="form-check small">
+                                <input class="form-check-input sim-skill-checkbox" type="checkbox" value="{{ skill }}" id="skill_chk_{{ loop.index }}" {% if loop.index <= 3 %}checked{% endif %}>
+                                <label class="form-check-label" for="skill_chk_{{ loop.index }}">
+                                    {{ skill }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary w-100 fw-semibold" onclick="runWhatIfSimulation()">
+                        <i class="bi bi-play-circle me-1"></i> Calculate Projected Impact
+                    </button>
+                </div>
+            </div>
+
+            <!-- Simulation Results Output Display -->
+            <div class="col-lg-7">
+                <div class="p-4 bg-light rounded border h-100 d-flex flex-column justify-content-between" id="simOutputBox">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bold text-dark mb-0">Projected Simulation Outcomes</h6>
+                            <span class="badge bg-success text-white" id="gainBadge">+14.5% Readiness Gain</span>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <div class="p-3 bg-white rounded border text-center">
+                                    <span class="stat-label">Current Baseline</span>
+                                    <div class="stat-value text-secondary" id="baselineScore">62.0%</div>
+                                    <span class="badge bg-light text-secondary border small" id="baselineCat">Near Job-Ready</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-white rounded border text-center border-success">
+                                    <span class="stat-label">Projected Outcome</span>
+                                    <div class="stat-value text-success" id="simulatedScore">76.5%</div>
+                                    <span class="badge bg-success-subtle text-success border small" id="simulatedCat">Job-Ready</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-white rounded border mb-3">
+                            <span class="small fw-semibold text-secondary">Explanation &amp; Methodology:</span>
+                            <p class="small text-muted mb-0 mt-1" id="simExplanation">
+                                Investing simulated deliberate practice hours across selected skills projects a measurable uplift in your explainable readiness score.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="small text-muted text-center pt-2 border-top">
+                        <i class="bi bi-info-circle me-1"></i>Simulated projections use identical underlying scoring weights without fabricating results.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function runWhatIfSimulation() {
+    const role = document.getElementById("simRoleInput").value;
+    const weeklyHours = parseInt(document.getElementById("studyHoursRange").value);
+    const weeks = parseInt(document.getElementById("durationWeeksRange").value);
+    
+    const checkboxes = document.querySelectorAll(".sim-skill-checkbox:checked");
+    const selectedSkills = Array.from(checkboxes).map(cb => cb.value);
+
+    if (selectedSkills.length === 0) {
+        alert("Please select at least one skill to boost in the simulation.");
+        return;
+    }
+
+    fetch("{{ url_for('gap.api_simulate_what_if') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            target_role: role,
+            weekly_hours: weeklyHours,
+            weeks: weeks,
+            boosted_skills: selectedSkills
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("baselineScore").innerText = data.baseline_readiness + "%";
+        document.getElementById("simulatedScore").innerText = data.simulated_readiness + "%";
+        document.getElementById("gainBadge").innerText = "+" + data.projected_gain + "% Projected Gain";
+        document.getElementById("baselineCat").innerText = data.baseline_category;
+        document.getElementById("simulatedCat").innerText = data.simulated_category;
+        document.getElementById("simExplanation").innerText = data.explanation;
+    })
+    .catch(err => {
+        console.error("Simulation error:", err);
+    });
+}
+
+// Initial simulation run on page load
+document.addEventListener("DOMContentLoaded", function () {
+    runWhatIfSimulation();
+});
+</script>
+{% endblock %}

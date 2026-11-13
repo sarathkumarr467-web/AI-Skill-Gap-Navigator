@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Skill Proof Portfolio &amp; Evidence Auditor — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="bi bi-shield-check text-success me-2"></i>Skill Proof Portfolio &amp; Project Auditor</h3>
+            <p class="text-muted mb-0">Persistent candidate evidence portfolio distinguishing self-reported claims from demonstrated assessment, coding, and audited project proofs.</p>
+        </div>
+
+        <a href="{{ url_for('portfolio.download_pdf') }}" class="btn btn-teal text-white shadow-sm">
+            <i class="bi bi-file-earmark-pdf-fill me-1"></i> Download PDF Skill Proof
+        </a>
+    </div>
+
+    <!-- Verified Competencies Table -->
+    <div class="card p-4 mb-4">
+        <h5 class="fw-bold text-dark mb-3">Evidence-Backed Competency Matrix</h5>
+        {% if evidences %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle table-custom mb-0">
+                <thead>
+                    <tr>
+                        <th>Competency</th>
+                        <th>Category</th>
+                        <th>Claimed Proficiency</th>
+                        <th>Demonstrated Proficiency</th>
+                        <th>Evidence Source</th>
+                        <th>Verification Status</th>
+                        <th>Confidence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ev in evidences %}
+                    <tr>
+                        <td class="fw-bold text-dark">{{ ev.skill.name if ev.skill else 'Skill' }}</td>
+                        <td class="text-muted small">{{ ev.skill.category if ev.skill else 'General' }}</td>
+                        <td><span class="badge bg-light text-secondary border">{{ ev.claimed_proficiency }}%</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="width: 70px; height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: {{ ev.demonstrated_proficiency }}%;"></div>
+                                </div>
+                                <span class="fw-bold text-success">{{ ev.demonstrated_proficiency }}%</span>
+                            </div>
+                        </td>
+                        <td class="small">{{ ev.evidence_source }}</td>
+                        <td>
+                            <span class="badge {{ 'bg-success-subtle text-success' if 'Verified' in ev.verification_status else 'bg-warning-subtle text-warning' }} border px-2 py-1">
+                                <i class="bi bi-patch-check-fill me-1"></i>{{ ev.verification_status }}
+                            </span>
+                        </td>
+                        <td class="small text-muted">{{ (ev.confidence_score * 100) | round }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted small mb-0">No competencies recorded yet. Complete assessments or parse your resume to build your evidence profile.</p>
+        {% endif %}
+    </div>
+
+    <!-- Project Auditor & Project Portfolio Grid -->
+    <div class="row g-4 mb-4">
+        <!-- Project Audit Form -->
+        <div class="col-lg-5">
+            <div class="card p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-github text-primary me-2"></i>Audit New Project Artifact</h5>
+                
+                <form method="POST" action="{{ url_for('portfolio.audit_project') }}">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Project Title</label>
+                        <input type="text" name="title" id="pTitle" class="form-control" required placeholder="e.g. End-to-End Churn Prediction API">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Public GitHub / GitLab Repository</label>
+                        <input type="url" name="github_url" id="pGit" class="form-control" placeholder="https://github.com/username/repo">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Live Cloud Deployment URL</label>
+                        <input type="url" name="live_url" id="pLive" class="form-control" placeholder="https://my-app.render.com">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Technical Description &amp; Architecture</label>
+                        <textarea name="description" id="pDesc" class="form-control" rows="5" required placeholder="Detail the pipeline, frameworks used, Docker containers, testing suites, and evaluation metrics..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="loadSampleProject()">
+                            Load Sample Project
+                        </button>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                        <i class="bi bi-search me-1"></i> Audit Project Completeness
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Audited Projects List -->
+        <div class="col-lg-7">
+            <div class="card p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3">Audited Project Evidence</h5>
+
+                {% if projects %}
+                <div class="d-flex flex-column gap-3">
+                    {% for p in projects %}
+                    <div class="p-3 bg-light rounded border">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">{{ p.project_title }}</h6>
+                                <div class="small text-muted">
+                                    Rating: <strong>{{ p.documentation_rating }}</strong>
+                                </div>
+                            </div>
+                            <span class="badge bg-primary text-white fs-6">{{ p.completeness_score }}% Completeness</span>
+                        </div>
+
+                        <p class="small text-muted mb-2">{{ p.description[:140] }}...</p>
+
+                        <!-- Extracted Tech -->
+                        <div class="mb-2">
+                            <span class="small fw-semibold text-secondary">Detected Technologies:</span>
+                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                {% for tech in p.extracted_tech %}
+                                <span class="badge bg-white text-dark border small">{{ tech }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Missing Categories / Actionable Suggestions -->
+                        {% if p.suggestions %}
+                        <div class="p-2 bg-white rounded border small mt-2">
+                            <span class="fw-bold text-warning d-block mb-1"><i class="bi bi-lightbulb me-1"></i>Improvement Opportunities:</span>
+                            <ul class="mb-0 ps-3 text-muted">
+                                {% for sug in p.suggestions[:2] %}
+                                <li>{{ sug }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5 text-muted my-auto">
+                    <i class="bi bi-folder2-open fs-1 text-secondary mb-2 d-block"></i>
+                    <h6 class="fw-bold text-dark">No Audited Projects Yet</h6>
+                    <p class="small text-muted mb-0">Use the form on the left to audit your first technical repository or project artifact.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function loadSampleProject() {
+    document.getElementById("pTitle").value = "Distributed Real-Time Fraud Detection Pipeline";
+    document.getElementById("pGit").value = "https://github.com/nexora/fraud-detection-mlops";
+    document.getElementById("pLive").value = "https://fraud-detector.nexora.ai";
+    document.getElementById("pDesc").value = "Built an end-to-end fraud classification service using Scikit-Learn, PyTorch, and Kafka streaming. Containerized with Docker and Docker-Compose with a FastAPI REST server. Integrated PyTest automated unit tests and GitHub Actions CI/CD pipeline achieving 94% precision-recall AUC.";
+}
+</script>
+{% endblock %}

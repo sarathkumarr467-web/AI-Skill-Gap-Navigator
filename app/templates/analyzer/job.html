@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Job Description Analyzer — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h3 class="fw-bold text-dark mb-1"><i class="bi bi-briefcase text-primary me-2"></i>Smart Job Description Analyzer</h3>
+        <p class="text-muted">Analyze live job postings using NLP to distinguish explicit requirements from preferred skills and benchmark your profile coverage.</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Input Form -->
+        <div class="col-lg-5">
+            <div class="card p-4">
+                <h5 class="fw-bold text-dark mb-3">Paste Target Job Posting</h5>
+                <form method="POST" action="{{ url_for('analyzer.job_analyzer') }}">
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-7">
+                            <label class="form-label small fw-semibold text-secondary">Target Role Title</label>
+                            <input type="text" name="job_title" id="jobTitleInput" class="form-control" value="AI & ML Engineer" required>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-semibold text-secondary">Company Name</label>
+                            <input type="text" name="company" id="companyInput" class="form-control" value="Tech Innovations">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Full Job Description Text</label>
+                        <textarea name="jd_text" id="jdTextArea" class="form-control" rows="10" required placeholder="Paste the job description including responsibilities, required qualifications, and preferred tools..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="loadSampleJD()">
+                            <i class="bi bi-clipboard-check me-1"></i> Load AI Engineer Posting
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="document.getElementById('jdTextArea').value=''">
+                            Clear
+                        </button>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                        <i class="bi bi-search me-1"></i> Analyze Qualifications &amp; Skills
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Analysis Results -->
+        <div class="col-lg-7">
+            {% if result %}
+            <div class="card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-0">{{ result.job_title }}</h5>
+                        <span class="text-muted small">{{ result.company }} &bull; Detected Level: <strong class="text-primary">{{ result.experience_level }}</strong></span>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-primary text-white fs-6">{{ result.coverage_pct }}% Match</span>
+                        <div class="small text-muted mt-1">Profile Coverage</div>
+                    </div>
+                </div>
+
+                <!-- Match Progress Bar -->
+                <div class="progress mb-4" style="height: 10px;">
+                    <div class="progress-bar bg-primary" style="width: {{ result.coverage_pct }}%;"></div>
+                </div>
+
+                <!-- Matched vs Missing Skills Grid -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded border h-100">
+                            <h6 class="fw-bold text-success mb-2">
+                                <i class="bi bi-check-circle-fill me-1"></i> Candidate Strengths ({{ result.matching_skills | length }})
+                            </h6>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for s in result.matching_skills %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle">{{ s }}</span>
+                                {% else %}
+                                <span class="text-muted small">No verified skills matched yet.</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded border h-100">
+                            <h6 class="fw-bold text-danger mb-2">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i> Missing Qualifications ({{ result.missing_skills | length }})
+                            </h6>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for s in result.missing_skills %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle">{{ s }}</span>
+                                {% else %}
+                                <span class="text-success small fw-semibold">All qualifications matched!</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Required vs Preferred Categorization -->
+                <div class="mb-3">
+                    <h6 class="fw-bold text-dark mb-2">Explicit Minimum Requirements:</h6>
+                    <div class="d-flex flex-wrap gap-1 mb-3">
+                        {% for s in result.required_skills %}
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">{{ s }}</span>
+                        {% endfor %}
+                    </div>
+
+                    {% if result.preferred_skills %}
+                    <h6 class="fw-bold text-dark mb-2">Preferred / Bonus Tools:</h6>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for s in result.preferred_skills %}
+                        <span class="badge bg-secondary-subtle text-secondary border px-2 py-1">{{ s }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <hr>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('gap.gap_analysis') }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-bullseye me-1"></i> Compare Against Benchmark Role
+                    </a>
+                    <a href="{{ url_for('learning.roadmap') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-signpost-split me-1"></i> Update Learning Roadmap
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="card p-5 text-center text-muted h-100 justify-content-center">
+                <i class="bi bi-briefcase fs-1 text-secondary mb-3"></i>
+                <h5 class="fw-semibold text-dark">No Job Description Analyzed Yet</h5>
+                <p class="small text-muted mb-4 mx-auto" style="max-width: 400px;">
+                    Paste a job description or load our realistic AI Engineer sample posting to see required vs preferred NLP extraction and your coverage rate.
+                </p>
+                <div>
+                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="loadSampleJD()">
+                        Load AI Engineer Sample Posting
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function loadSampleJD() {
+    document.getElementById("jobTitleInput").value = "Associate AI / Machine Learning Engineer";
+    document.getElementById("companyInput").value = "Nexora Intelligence Labs";
+    const sampleJD = `ROLE OVERVIEW:
+Nexora Labs is seeking an Associate AI Engineer to join our core ML Systems team. You will train, evaluate, and deploy high-performance predictive models.
+
+MINIMUM REQUIRED QUALIFICATIONS:
+- Bachelor's degree in Computer Science, Data Science, or related engineering field.
+- Strong proficiency in Python and solid fundamentals in Data Structures & Algorithms.
+- Hands-on experience with Machine Learning Modeling and Scikit-Learn pipelines.
+- Knowledge of Deep Learning and PyTorch for neural network implementations.
+- Experience with SQL and relational databases for feature extraction.
+- Familiarity with building REST APIs using Flask / FastAPI.
+
+PREFERRED QUALIFICATIONS:
+- Familiarity with MLOps & Model Deployment and Docker & Containerization.
+- Prior experience fine-tuning Natural Language Processing (NLP) or Transformer architectures.
+- Experience with Cloud Computing (AWS/GCP/Azure) is a strong plus.`;
+    document.getElementById("jdTextArea").value = sampleJD;
+}
+</script>
+{% endblock %}

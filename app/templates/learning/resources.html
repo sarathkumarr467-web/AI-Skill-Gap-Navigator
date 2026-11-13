@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Curated Learning Resources — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="bi bi-book text-primary me-2"></i>Curated Learning Resources</h3>
+            <p class="text-muted mb-0">Verified official documentation, technical deep-dives, and structured courses mapped directly to skill gap requirements.</p>
+        </div>
+
+        <!-- Filter Form -->
+        <form method="GET" action="{{ url_for('learning.resources') }}" class="d-flex align-items-center gap-2">
+            <select name="skill" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="All" {% if current_skill == 'All' %}selected{% endif %}>All Skills</option>
+                {% for s in all_skills %}
+                <option value="{{ s }}" {% if current_skill == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+            <select name="level" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="All" {% if current_level == 'All' %}selected{% endif %}>All Levels</option>
+                <option value="Beginner" {% if current_level == 'Beginner' %}selected{% endif %}>Beginner</option>
+                <option value="Intermediate" {% if current_level == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+                <option value="Advanced" {% if current_level == 'Advanced' %}selected{% endif %}>Advanced</option>
+            </select>
+        </form>
+    </div>
+
+    <!-- Resource Cards Grid -->
+    <div class="row g-4">
+        {% for r in resources %}
+        <div class="col-md-6">
+            <div class="card p-4 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-primary-subtle text-primary border small">{{ r.skill_name }}</span>
+                        <div class="d-flex gap-1">
+                            <span class="badge bg-light text-secondary border small">{{ r.resource_type }}</span>
+                            <span class="badge {{ 'bg-success-subtle text-success' if r.level == 'Beginner' else ('bg-info-subtle text-info' if r.level == 'Intermediate' else 'bg-warning-subtle text-warning') }} border small">
+                                {{ r.level }}
+                            </span>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">{{ r.title }}</h5>
+                    <p class="small text-muted mb-3">{{ r.description }}</p>
+                </div>
+
+                <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">
+                        <i class="bi bi-clock me-1"></i>~{{ r.estimated_hours }} Hours &bull; {{ 'Free' if r.is_free else 'Paid' }}
+                    </span>
+                    <a href="{{ r.url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
+                        Visit Resource <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="card p-5 text-center text-muted">
+                <i class="bi bi-journal-x fs-1 mb-2 text-secondary"></i>
+                <h6 class="fw-bold text-dark">No resources found matching filter criteria</h6>
+                <p class="small text-muted mb-3">Try selecting "All Skills" or reset your difficulty filter.</p>
+                <div>
+                    <a href="{{ url_for('learning.resources') }}" class="btn btn-sm btn-primary">Reset Filters</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

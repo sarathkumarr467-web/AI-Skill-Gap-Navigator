@@ -1,0 +1,227 @@
+[
+  {
+    "id": 1,
+    "skill": "Python",
+    "topic": "Python Fundamentals",
+    "difficulty": "Beginner",
+    "question": "What is the time complexity of looking up a key in a standard Python dictionary in the average case?",
+    "options": [
+      "O(1)",
+      "O(n)",
+      "O(log n)",
+      "O(n log n)"
+    ],
+    "correct_option": 0,
+    "explanation": "Python dictionaries use hash tables, achieving O(1) average-time complexity for key lookups."
+  },
+  {
+    "id": 2,
+    "skill": "Python",
+    "topic": "Memory Management",
+    "difficulty": "Intermediate",
+    "question": "How does Python handle memory management and cleanup for objects with cyclic references?",
+    "options": [
+      "Reference counting alone handles cycles automatically",
+      "A generational cyclic garbage collector identifies and reclaims unreachable reference cycles",
+      "Cycles are never collected and must be freed manually via ctypes",
+      "Python compiler prevents cyclic references at compile-time"
+    ],
+    "correct_option": 1,
+    "explanation": "Python uses reference counting as primary cleanup and a generational garbage collector to detect and break reference cycles."
+  },
+  {
+    "id": 3,
+    "skill": "Python",
+    "topic": "Concurrency",
+    "difficulty": "Advanced",
+    "question": "What is the role of the Global Interpreter Lock (GIL) in CPython?",
+    "options": [
+      "It accelerates NumPy matrix multiplications across threads",
+      "It is a mutex that prevents multiple native threads from executing Python bytecodes at once",
+      "It locks files on disk during database writes",
+      "It enables parallel GPU kernel execution"
+    ],
+    "correct_option": 1,
+    "explanation": "The GIL ensures thread safety by allowing only one native OS thread to execute Python bytecode at a time in CPython."
+  },
+  {
+    "id": 4,
+    "skill": "Data Structures & Algorithms",
+    "topic": "Search Trees",
+    "difficulty": "Beginner",
+    "question": "In a balanced Binary Search Tree (AVL or Red-Black), what is the worst-case time complexity of searching for an element?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "correct_option": 1,
+    "explanation": "Balanced BSTs guarantee a maximum height of O(log n), keeping search, insertion, and deletion within O(log n) time."
+  },
+  {
+    "id": 5,
+    "skill": "Data Structures & Algorithms",
+    "topic": "Dynamic Programming",
+    "difficulty": "Intermediate",
+    "question": "What are the two essential characteristics required for a problem to be solvable via Dynamic Programming?",
+    "options": [
+      "Greedy choice property and polynomial bounds",
+      "Optimal substructure and overlapping subproblems",
+      "Linear independence and convexity",
+      "Deterministic transitions and acyclic topological graph"
+    ],
+    "correct_option": 1,
+    "explanation": "Dynamic programming applies when a problem exhibits both optimal substructure (optimal solution from optimal sub-solutions) and overlapping subproblems."
+  },
+  {
+    "id": 6,
+    "skill": "Data Structures & Algorithms",
+    "topic": "Graph Algorithms",
+    "difficulty": "Advanced",
+    "question": "Which algorithm computes single-source shortest paths in a directed weighted graph that may contain negative edge weights (but no negative cycles)?",
+    "options": [
+      "Dijkstra's Algorithm",
+      "Bellman-Ford Algorithm",
+      "Kruskal's Algorithm",
+      "Prim's Algorithm"
+    ],
+    "correct_option": 1,
+    "explanation": "Bellman-Ford handles graphs with negative edge weights and detects negative weight cycles in O(V * E) time."
+  },
+  {
+    "id": 7,
+    "skill": "SQL",
+    "topic": "Query Optimization",
+    "difficulty": "Beginner",
+    "question": "Which SQL clause is used to filter aggregated grouped results rather than individual rows?",
+    "options": [
+      "WHERE",
+      "HAVING",
+      "GROUP BY",
+      "ORDER BY"
+    ],
+    "correct_option": 1,
+    "explanation": "WHERE filters rows before grouping; HAVING filters the aggregated summary groups created by GROUP BY."
+  },
+  {
+    "id": 8,
+    "skill": "SQL",
+    "topic": "Window Functions",
+    "difficulty": "Intermediate",
+    "question": "What is the primary difference between RANK() and DENSE_RANK() in SQL window functions?",
+    "options": [
+      "RANK() ignores NULL values whereas DENSE_RANK() counts them",
+      "RANK() leaves gaps in sequence after tied values, whereas DENSE_RANK() does not leave gaps",
+      "RANK() can only be used with ORDER BY DESC",
+      "There is no difference; they are aliases"
+    ],
+    "correct_option": 1,
+    "explanation": "For ties (e.g. two 1st places), RANK() yields (1, 1, 3), whereas DENSE_RANK() yields (1, 1, 2)."
+  },
+  {
+    "id": 9,
+    "skill": "Machine Learning Modeling",
+    "topic": "Bias-Variance Tradeoff",
+    "difficulty": "Beginner",
+    "question": "What typically occurs when a model suffers from High Variance?",
+    "options": [
+      "It underfits both training and testing datasets",
+      "It overfits the training dataset and performs poorly on unseen test data",
+      "It has excessive bias towards linear boundaries",
+      "It converges too slowly during gradient descent"
+    ],
+    "correct_option": 1,
+    "explanation": "High variance means the model is overly sensitive to training noise, leading to strong memorization and poor generalization."
+  },
+  {
+    "id": 10,
+    "skill": "Machine Learning Modeling",
+    "topic": "Evaluation Metrics",
+    "difficulty": "Intermediate",
+    "question": "In a severe class-imbalance problem (e.g. fraud detection at 0.1% positive rate), which evaluation metric is MOST reliable?",
+    "options": [
+      "Accuracy",
+      "Precision-Recall AUC (PR-AUC)",
+      "Mean Squared Error",
+      "R-squared"
+    ],
+    "correct_option": 1,
+    "explanation": "Accuracy is misleading with extreme imbalance (a trivial 99.9% accuracy). PR-AUC focuses on true positive rate and precision on the minority class."
+  },
+  {
+    "id": 11,
+    "skill": "Machine Learning Modeling",
+    "topic": "Ensemble Methods",
+    "difficulty": "Advanced",
+    "question": "How does Gradient Boosting differ fundamentally from Random Forest (Bagging)?",
+    "options": [
+      "Random Forest builds trees sequentially to correct prior errors; Gradient Boosting trains independent parallel trees",
+      "Gradient Boosting builds trees sequentially to minimize pseudo-residuals of prior trees; Random Forest averages independent deep trees",
+      "Gradient Boosting only works on numerical classification, not regression",
+      "Random Forest uses second-order Taylor series Hessian calculations"
+    ],
+    "correct_option": 1,
+    "explanation": "Gradient boosting sequentially trains shallow trees to predict the negative gradient (residuals) of the loss function, while Random Forests bag parallel independent trees."
+  },
+  {
+    "id": 12,
+    "skill": "Deep Learning",
+    "topic": "Optimization",
+    "difficulty": "Intermediate",
+    "question": "What is the primary motivation for Batch Normalization during deep neural network training?",
+    "options": [
+      "It eliminates the need for activation functions",
+      "It reduces internal covariate shift and stabilizes layer input distributions, enabling higher learning rates",
+      "It converts recurrent networks into feedforward networks",
+      "It compresses weights into 8-bit integers"
+    ],
+    "correct_option": 1,
+    "explanation": "Batch Normalization normalizes activations across mini-batches, stabilizing gradients and permitting faster convergence."
+  },
+  {
+    "id": 13,
+    "skill": "Deep Learning",
+    "topic": "Architectures",
+    "difficulty": "Advanced",
+    "question": "What computational complexity characterizes the self-attention mechanism in the standard Transformer with sequence length N?",
+    "options": [
+      "O(N)",
+      "O(N log N)",
+      "O(N^2)",
+      "O(2^N)"
+    ],
+    "correct_option": 2,
+    "explanation": "Computing the QK^T attention matrix involves every token attending to every other token, resulting in O(N^2) time and memory complexity."
+  },
+  {
+    "id": 14,
+    "skill": "MLOps & Model Deployment",
+    "topic": "Containerization",
+    "difficulty": "Intermediate",
+    "question": "Why are multi-stage Docker builds recommended when containerizing Python ML applications?",
+    "options": [
+      "They run containers in parallel across Kubernetes nodes",
+      "They separate build dependencies (compilers, build tools) from the final runtime image, reducing image size and attack surface",
+      "They automatically tune model hyperparameters inside Docker",
+      "They enable live GPU hot-swapping"
+    ],
+    "correct_option": 1,
+    "explanation": "Multi-stage builds allow compiling C-extensions or installing wheels in a builder stage and copying only artifacts to a slim production image."
+  },
+  {
+    "id": 15,
+    "skill": "MLOps & Model Deployment",
+    "topic": "Production Monitoring",
+    "difficulty": "Advanced",
+    "question": "What is 'Concept Drift' in a production machine learning pipeline?",
+    "options": [
+      "A hardware failure in the inference server",
+      "A change in the statistical relationship between input features X and target Y over time P(Y|X)",
+      "A shift in input feature distributions P(X) while P(Y|X) stays unchanged",
+      "A syntax error in model serialization"
+    ],
+    "correct_option": 1,
+    "explanation": "Concept drift refers to changes in the underlying conditional distribution P(Y|X). In contrast, changes in P(X) are called covariate shift."
+  }
+]

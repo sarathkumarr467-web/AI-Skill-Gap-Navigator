@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Recommended Portfolio Projects — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="bi bi-lightbulb text-primary me-2"></i>AI Project Recommendation Engine</h3>
+            <p class="text-muted mb-0">Targeted portfolio projects engineered to prove missing competencies to technology recruiters with strict validation checklists.</p>
+        </div>
+
+        <!-- Filter -->
+        <form method="GET" action="{{ url_for('learning.projects') }}" class="d-flex align-items-center gap-2">
+            <select name="difficulty" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="All" {% if current_diff == 'All' %}selected{% endif %}>All Difficulties</option>
+                <option value="Beginner" {% if current_diff == 'Beginner' %}selected{% endif %}>Beginner</option>
+                <option value="Intermediate" {% if current_diff == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+                <option value="Advanced" {% if current_diff == 'Advanced' %}selected{% endif %}>Advanced</option>
+            </select>
+        </form>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="row g-4">
+        {% for p in projects %}
+        <div class="col-lg-6">
+            <div class="card p-4 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-primary text-white small">{{ p.project_code }}</span>
+                        <div class="d-flex gap-1">
+                            <span class="badge bg-danger-subtle text-danger border small">Addresses Gap: {{ p.target_gap }}</span>
+                            <span class="badge {{ 'bg-success-subtle text-success' if p.difficulty == 'Beginner' else ('bg-info-subtle text-info' if p.difficulty == 'Intermediate' else 'bg-warning-subtle text-warning') }} border small">
+                                {{ p.difficulty }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-dark mb-2">{{ p.title }}</h5>
+                    <p class="small text-muted mb-3">{{ p.portfolio_value }}</p>
+
+                    <!-- Tech Stack -->
+                    <div class="mb-3">
+                        <span class="small fw-semibold text-secondary">Recommended Stack:</span>
+                        <div class="d-flex flex-wrap gap-1 mt-1">
+                            {% for tech in p.tech_stack %}
+                            <span class="badge bg-light text-dark border small">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Learning Objectives -->
+                    <div class="mb-3">
+                        <span class="small fw-semibold text-secondary">Key Learning Objectives:</span>
+                        <ul class="small text-muted mb-0 ps-3">
+                            {% for obj in p.learning_objectives[:3] %}
+                            <li>{{ obj }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Validation Checklist -->
+                    <div class="mb-3 p-3 bg-light rounded border">
+                        <span class="small fw-bold text-dark d-block mb-1">
+                            <i class="bi bi-shield-check text-success me-1"></i>Recruiter Proof Checklist:
+                        </span>
+                        <ul class="small text-muted mb-0 ps-3">
+                            {% for chk in p.validation_checklist[:3] %}
+                            <li>{{ chk }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">Proof Type: Production Artifact</span>
+                    <a href="{{ url_for('portfolio.index') }}" class="btn btn-sm btn-outline-primary">
+                        Audit Completed Project &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

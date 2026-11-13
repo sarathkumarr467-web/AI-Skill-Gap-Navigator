@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Top Candidate Welcome & Target Role Header -->
+    <div class="card p-4 mb-4 border-0 shadow-sm bg-white">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <h3 class="fw-bold text-dark mb-0">Welcome back, {{ user.full_name }}</h3>
+                    <span class="badge bg-primary-subtle text-primary border px-2 py-1 small">Candidate</span>
+                </div>
+                <div class="text-muted small">
+                    Target Career: <strong class="text-dark">{{ role.title if role else user.target_career }}</strong> &bull;
+                    Domain: <span class="text-secondary">{{ role.domain if role else 'Engineering' }}</span> &bull;
+                    Study Pace: <strong>{{ user.study_hours_per_week }} hrs/week</strong>
+                </div>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ url_for('assessment.index') }}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-play-circle me-1"></i> Take Assessment
+                </a>
+                <a href="{{ url_for('analyzer.resume_analyzer') }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-cloud-arrow-up me-1"></i> Upload Resume
+                </a>
+                <a href="{{ url_for('practice.coding_index') }}" class="btn btn-sm btn-outline-dark">
+                    <i class="bi bi-terminal me-1"></i> Coding Sandbox
+                </a>
+                <a href="{{ url_for('portfolio.download_pdf') }}" class="btn btn-sm btn-teal text-white">
+                    <i class="bi bi-file-earmark-pdf me-1"></i> PDF Proof
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4 Key Diagnostic Metrics Row -->
+    <div class="row g-3 mb-4">
+        <!-- 1. Readiness Score -->
+        <div class="col-md-3">
+            <div class="card p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="stat-label">Job-Readiness Score</span>
+                    <i class="bi bi-speedometer2 text-primary fs-5"></i>
+                </div>
+                <div class="stat-value text-{{ readiness.badge_color }}">{{ readiness.score }}%</div>
+                <div class="mt-1">
+                    <span class="badge bg-{{ readiness.badge_color }}-subtle text-{{ readiness.badge_color }} border border-{{ readiness.badge_color }}-subtle small">
+                        {{ readiness.category }}
+                    </span>
+                </div>
+                <div class="small text-muted mt-2" style="font-size: 0.75rem;">
+                    Explainable diagnostic based on verified evidence.
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Skill Coverage -->
+        <div class="col-md-3">
+            <div class="card p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="stat-label">Role Skill Coverage</span>
+                    <i class="bi bi-bullseye text-info fs-5"></i>
+                </div>
+                <div class="stat-value text-dark">{{ report.skill_coverage_pct if report else 45.0 }}%</div>
+                <div class="progress mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-info" style="width: {{ report.skill_coverage_pct if report else 45 }}%;"></div>
+                </div>
+                <div class="small text-muted mt-2" style="font-size: 0.75rem;">
+                    Match against {{ role.title if role else 'AI Engineer' }} O*NET requirements.
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Verified Competencies -->
+        <div class="col-md-3">
+            <div class="card p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="stat-label">Verified Competencies</span>
+                    <i class="bi bi-shield-check text-success fs-5"></i>
+                </div>
+                <div class="stat-value text-success">{{ verified_skills | length }}</div>
+                <div class="small text-muted mt-1">
+                    Demonstrated proficiency &ge; 60%
+                </div>
+                <div class="mt-2">
+                    <a href="{{ url_for('portfolio.index') }}" class="small fw-semibold text-success text-decoration-none">
+                        View evidence proof &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Roadmap Progress -->
+        <div class="col-md-3">
+            <div class="card p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="stat-label">Roadmap Milestones</span>
+                    <i class="bi bi-signpost-split text-teal fs-5"></i>
+                </div>
+                <div class="stat-value text-dark">{{ roadmap.to_dict().progress_pct if roadmap else 0 }}%</div>
+                <div class="progress mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-teal" style="width: {{ roadmap.to_dict().progress_pct if roadmap else 0 }}%;"></div>
+                </div>
+                <div class="small text-muted mt-2" style="font-size: 0.75rem;">
+                    {{ roadmap.to_dict().completed_milestones if roadmap else 0 }} of {{ roadmap.to_dict().total_milestones if roadmap else 8 }} milestones completed.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Explainable Readiness Factor Breakdown + Skill Profile Radar Chart -->
+    <div class="row g-4 mb-4">
+        <!-- Explainable Scoring Engine Breakdown -->
+        <div class="col-lg-6">
+            <div class="card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-calculator text-primary me-2"></i>Explainable Job-Readiness Factors
+                    </h5>
+                    <span class="badge bg-light text-secondary border">Rule B: Transparent</span>
+                </div>
+                <p class="small text-muted mb-3">
+                    <code>{{ readiness.formula }}</code>
+                </p>
+
+                <!-- Factor 1: Skill Coverage -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small fw-semibold text-secondary mb-1">
+                        <span>1. Required Skill Coverage (Weight: 40%)</span>
+                        <span>{{ readiness.factors.skill_coverage.weighted_contribution }} / 40 pts</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-primary" style="width: {{ (readiness.factors.skill_coverage.weighted_contribution / 40) * 100 }}%;"></div>
+                    </div>
+                    <div class="text-muted small mt-1" style="font-size: 0.75rem;">
+                        Measured at {{ readiness.factors.skill_coverage.raw_value }}% coverage of target career competencies.
+                    </div>
+                </div>
+
+                <!-- Factor 2: Assessment Proficiency -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small fw-semibold text-secondary mb-1">
+                        <span>2. Technical Assessment Performance (Weight: 30%)</span>
+                        <span>{{ readiness.factors.assessment_proficiency.weighted_contribution }} / 30 pts</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-info" style="width: {{ (readiness.factors.assessment_proficiency.weighted_contribution / 30) * 100 }}%;"></div>
+                    </div>
+                    <div class="text-muted small mt-1" style="font-size: 0.75rem;">
+                        Average assessment accuracy across domain MCQ tests: {{ readiness.factors.assessment_proficiency.raw_value }}%.
+                    </div>
+                </div>
+
+                <!-- Factor 3: Practical Coding -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small fw-semibold text-secondary mb-1">
+                        <span>3. Sandboxed Coding Challenges (Weight: 20%)</span>
+                        <span>{{ readiness.factors.practical_coding.weighted_contribution }} / 20 pts</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: {{ (readiness.factors.practical_coding.weighted_contribution / 20) * 100 }}%;"></div>
+                    </div>
+                    <div class="text-muted small mt-1" style="font-size: 0.75rem;">
+                        Automated unit-test pass rate on MBPP algorithmic challenges: {{ readiness.factors.practical_coding.raw_value }}%.
+                    </div>
+                </div>
+
+                <!-- Factor 4: Portfolio Evidence -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small fw-semibold text-secondary mb-1">
+                        <span>4. Project &amp; Repository Evidence (Weight: 10%)</span>
+                        <span>{{ readiness.factors.portfolio_evidence.weighted_contribution }} / 10 pts</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-warning" style="width: {{ (readiness.factors.portfolio_evidence.weighted_contribution / 10) * 100 }}%;"></div>
+                    </div>
+                    <div class="text-muted small mt-1" style="font-size: 0.75rem;">
+                        Audited repositories, containerization, and test suite completeness: {{ readiness.factors.portfolio_evidence.raw_value }}%.
+                    </div>
+                </div>
+
+                <!-- Critical Penalty Notification if any -->
+                {% if readiness.penalties.critical_missing_count > 0 %}
+                <div class="alert alert-warning py-2 px-3 small mb-2">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                    <strong>Critical Competency Penalty:</strong> -{{ readiness.penalties.deduction }} pts deduction due to {{ readiness.penalties.critical_missing_count }} missing critical skill(s).
+                </div>
+                {% endif %}
+
+                <div class="mt-auto pt-2 border-top">
+                    <span class="text-muted" style="font-size: 0.72rem;">
+                        <i class="bi bi-info-circle me-1"></i>{{ readiness.disclaimer }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Competency Chart -->
+        <div class="col-lg-6">
+            <div class="card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-bar-chart-fill text-primary me-2"></i>Demonstrated Competency Profile
+                    </h5>
+                    <a href="{{ url_for('assessment.index') }}" class="btn btn-sm btn-outline-primary">Take Test</a>
+                </div>
+                <div style="height: 280px; position: relative;">
+                    <canvas id="competencyChart"></canvas>
+                </div>
+                <div class="text-center small text-muted mt-2">
+                    Visualizes demonstrated proficiency levels (0-100) across target career competencies.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3: Priority Gaps & Active Learning Roadmap -->
+    <div class="row g-4 mb-4">
+        <!-- Critical Skill Gaps & Prioritization -->
+        <div class="col-lg-6">
+            <div class="card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-exclamation-octagon text-danger me-2"></i>Priority Skill Gaps
+                    </h5>
+                    <a href="{{ url_for('gap.gap_analysis') }}" class="btn btn-sm btn-outline-secondary">Detailed Report</a>
+                </div>
+
+                {% if report and report.critical_gaps %}
+                <div class="list-group list-group-flush">
+                    {% for gap in report.critical_gaps[:4] %}
+                    <div class="list-group-item px-0 py-3 border-bottom">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <div>
+                                <span class="fw-bold text-dark">{{ gap.skill }}</span>
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-2">Critical Gap</span>
+                            </div>
+                            <span class="badge bg-light text-dark border">Priority Score: {{ gap.priority.score if gap.priority else 85 }}</span>
+                        </div>
+                        <div class="text-muted small mb-2">
+                            {{ gap.priority.explanation if gap.priority else 'Essential core requirement for target career.' }}
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="small text-secondary">Target: {{ gap.required_proficiency }}%</span>
+                            <div class="progress flex-grow-1" style="height: 6px;">
+                                <div class="progress-bar bg-danger" style="width: {{ gap.current_proficiency }}%;"></div>
+                            </div>
+                            <a href="{{ url_for('learning.resources', skill=gap.skill) }}" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size: 0.75rem;">
+                                Learn &rarr;
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-check-circle-fill text-success fs-1 mb-2 d-block"></i>
+                    <p class="mb-2">No critical gaps recorded yet!</p>
+                    <a href="{{ url_for('gap.gap_analysis') }}" class="btn btn-sm btn-primary">Run First Gap Analysis</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Active Roadmap Milestones -->
+        <div class="col-lg-6">
+            <div class="card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-signpost-split text-teal me-2"></i>Active Learning Roadmap
+                    </h5>
+                    <a href="{{ url_for('learning.roadmap') }}" class="btn btn-sm btn-outline-secondary">Full Roadmap</a>
+                </div>
+
+                {% if roadmap and roadmap.milestones %}
+                <div class="list-group list-group-flush">
+                    {% for m in roadmap.milestones[:4] %}
+                    <div class="list-group-item px-0 py-3 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <form method="POST" action="{{ url_for('learning.toggle_milestone', milestone_id=m.id) }}" class="m-0">
+                                <button type="submit" class="btn btn-sm p-0 border-0 bg-transparent" title="Toggle completion">
+                                    <i class="bi {{ 'bi-check-circle-fill text-success' if m.is_completed else 'bi-circle text-muted' }} fs-4"></i>
+                                </button>
+                            </form>
+                            <div>
+                                <div class="fw-semibold {{ 'text-decoration-line-through text-muted' if m.is_completed else 'text-dark' }}">
+                                    {{ m.title }}
+                                </div>
+                                <div class="small text-muted">
+                                    Skill Focus: <strong>{{ m.skill_name }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="badge {{ 'bg-success-subtle text-success' if m.is_completed else 'bg-light text-secondary border' }} small">
+                            {{ 'Completed' if m.is_completed else 'In Progress' }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-calendar-plus text-primary fs-1 mb-2 d-block"></i>
+                    <p class="mb-2">No active roadmap generated.</p>
+                    <a href="{{ url_for('learning.roadmap') }}" class="btn btn-sm btn-primary">Generate Roadmap</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 4: Longitudinal Progress Analytics & Notifications -->
+    <div class="row g-4">
+        <!-- Longitudinal Tracking -->
+        <div class="col-lg-8">
+            <div class="card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-activity text-primary me-2"></i>Continuous Skill Intelligence Trend
+                    </h5>
+                    <a href="{{ url_for('portfolio.analytics') }}" class="btn btn-sm btn-outline-secondary">Deep Analytics</a>
+                </div>
+                <div style="height: 240px; position: relative;">
+                    <canvas id="progressTrendChart"></canvas>
+                </div>
+                <div class="small text-muted text-center mt-2">
+                    Longitudinal tracking of Job-Readiness Score over consecutive assessments and practice milestones.
+                </div>
+            </div>
+        </div>
+
+        <!-- In-App Notifications -->
+        <div class="col-lg-4">
+            <div class="card p-4 h-100">
+                <h5 class="fw-bold mb-3 text-dark">
+                    <i class="bi bi-bell text-warning me-2"></i>Actionable Alerts
+                </h5>
+                {% if notifications %}
+                <div class="list-group list-group-flush small">
+                    {% for n in notifications %}
+                    <div class="list-group-item px-0 py-2 border-bottom">
+                        <div class="fw-semibold text-dark">{{ n.title }}</div>
+                        <div class="text-muted">{{ n.message }}</div>
+                        <div class="text-secondary small mt-1" style="font-size: 0.7rem;">{{ n.to_dict().created_at }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-muted text-center py-4 small">
+                    <i class="bi bi-bell-slash fs-2 mb-2 d-block text-secondary"></i>
+                    No unread notifications.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // 1. Competency Bar Chart
+    fetch("{{ url_for('dashboard.dashboard_stats') }}")
+        .then(res => res.json())
+        .then(data => {
+            const ctx = document.getElementById("competencyChart").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: data.skills_labels,
+                    datasets: [{
+                        label: "Demonstrated Proficiency",
+                        data: data.skills_scores,
+                        backgroundColor: "#1e3a8a",
+                        borderRadius: 6
+                    }, {
+                        label: "Required Benchmark (O*NET)",
+                        data: data.skills_scores.map(() => 80),
+                        type: "line",
+                        borderColor: "#0d9488",
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: { callback: v => v + "%" }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: "top" }
+                    }
+                }
+            });
+        });
+
+    // 2. Longitudinal Progress Line Chart
+    const trendCtx = document.getElementById("progressTrendChart").getContext("2d");
+    {% if snapshots %}
+    const dates = [{% for s in snapshots %}"{{ s.to_dict().snapshot_date }}",{% endfor %}];
+    const scores = [{% for s in snapshots %}{{ s.readiness_score }},{% endfor %}];
+    {% else %}
+    const dates = ["4 Weeks Ago", "3 Weeks Ago", "2 Weeks Ago", "1 Week Ago", "Current"];
+    const scores = [42, 51, 62, 68, {{ readiness.score }}];
+    {% endif %}
+
+    new Chart(trendCtx, {
+        type: "line",
+        data: {
+            labels: dates,
+            datasets: [{
+                label: "Job-Readiness (%)",
+                data: scores,
+                borderColor: "#0d9488",
+                backgroundColor: "rgba(13, 148, 136, 0.1)",
+                fill: true,
+                tension: 0.3,
+                pointRadius: 5,
+                pointBackgroundColor: "#1e3a8a"
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    min: 0,
+                    max: 100,
+                    ticks: { callback: v => v + "%" }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

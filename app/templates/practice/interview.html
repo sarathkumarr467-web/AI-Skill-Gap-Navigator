@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}AI Mock Interview Coach — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="mb-4">
+        <h3 class="fw-bold text-dark mb-1"><i class="bi bi-mic text-primary me-2"></i>AI Mock Interview Coach</h3>
+        <p class="text-muted">Targeted interview preparation for <strong class="text-primary">{{ role }}</strong>. Evaluates technical depth, conceptual accuracy, and identifies missing concepts with actionable feedback.</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Questions & Submission Column -->
+        <div class="col-lg-6">
+            <div class="card p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3">Interview Questions for {{ role }}</h5>
+
+                <!-- Question Selector -->
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Select Interview Prompt:</label>
+                    <select id="questionSelect" class="form-select" onchange="updateSelectedQuestion()">
+                        {% for q in questions %}
+                        <option value="{{ q.question }}" data-type="{{ q.type }}">
+                            [{{ q.type }}] {{ q.question[:75] }}...
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Active Question Box -->
+                <div class="p-3 bg-light rounded border mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="badge bg-primary-subtle text-primary border small" id="qTypeBadge">Technical</span>
+                        <span class="small text-muted">Role Benchmark</span>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-0" id="qDisplay">
+                        {{ questions[0].question }}
+                    </h6>
+                </div>
+
+                <!-- Answer Textarea -->
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Your Spoken or Written Answer:</label>
+                    <textarea id="interviewAnswer" class="form-control" rows="8" placeholder="Articulate your structured explanation, design trade-offs, and concrete examples here..."></textarea>
+                    <div class="form-text small">Explain the underlying mechanisms, why trade-offs exist, and how you would diagnose issues in production.</div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="loadSampleAnswer()">
+                        <i class="bi bi-file-text me-1"></i> Load Strong Answer
+                    </button>
+                    <button type="button" class="btn btn-primary px-4 fw-semibold" id="evaluateBtn" onclick="submitInterviewAnswer()">
+                        <i class="bi bi-cpu-fill me-1"></i> Evaluate Response
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Evaluation Results Column -->
+        <div class="col-lg-6">
+            <div class="card p-4 h-100" id="interviewFeedbackCard">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-chat-square-quote text-teal me-2"></i>Coaching Evaluation &amp; Feedback</h5>
+
+                <div id="evalPlaceholder" class="text-center py-5 text-muted my-auto">
+                    <i class="bi bi-headset fs-1 mb-2 d-block text-secondary"></i>
+                    <h6 class="fw-bold text-dark">Ready for Mock Interview</h6>
+                    <p class="small text-muted mb-0">Select a question, type your response, and click "Evaluate Response" to receive detailed scoring and concept analysis.</p>
+                </div>
+
+                <div id="evalResultContent" style="display: none;">
+                    <!-- Score Card -->
+                    <div class="p-3 bg-light rounded border mb-3 text-center">
+                        <span class="stat-label">Interview Competency Score</span>
+                        <div class="display-5 fw-bold text-primary mb-1" id="evalScore">0%</div>
+                        <span class="badge bg-primary-subtle text-primary border small" id="evalScoreBadge">Strong Response</span>
+                    </div>
+
+                    <!-- Constructive Feedback -->
+                    <div class="mb-3">
+                        <span class="small fw-semibold text-secondary">Technical Feedback:</span>
+                        <div class="p-3 bg-light rounded border small text-dark mt-1" id="evalFeedbackText"></div>
+                    </div>
+
+                    <!-- Key Concepts Identified -->
+                    <div class="mb-3">
+                        <span class="small fw-semibold text-success">Key Concepts Successfully Covered:</span>
+                        <div class="d-flex flex-wrap gap-1 mt-1" id="identifiedConceptsList"></div>
+                    </div>
+
+                    <!-- Missing Concepts -->
+                    <div class="mb-3">
+                        <span class="small fw-semibold text-danger">Missing Expected Senior Concepts:</span>
+                        <div class="d-flex flex-wrap gap-1 mt-1" id="missingConceptsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateSelectedQuestion() {
+    const sel = document.getElementById("questionSelect");
+    const opt = sel.options[sel.selectedIndex];
+    document.getElementById("qDisplay").innerText = opt.value;
+    document.getElementById("qTypeBadge").innerText = opt.getAttribute("data-type");
+}
+
+function loadSampleAnswer() {
+    const sample = `To mitigate vanishing gradients in deep networks, we primarily use modern non-saturating activations like ReLU or GELU instead of sigmoid, and implement residual connections (ResNets) which allow identity gradient flow through skip connections. Additionally, He/Xavier weight initialization prevents initial activation saturation, and Batch Normalization stabilizes layer input distributions throughout training. For exploding gradients, gradient clipping by norm or value ensures stable optimizer step sizes during backpropagation.`;
+    document.getElementById("interviewAnswer").value = sample;
+}
+
+function submitInterviewAnswer() {
+    const question = document.getElementById("qDisplay").innerText;
+    const type = document.getElementById("qTypeBadge").innerText;
+    const answer = document.getElementById("interviewAnswer").value.trim();
+
+    if (answer.length < 15) {
+        alert("Please provide a substantive answer (at least 2-3 sentences).");
+        return;
+    }
+
+    const btn = document.getElementById("evaluateBtn");
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Analyzing...`;
+
+    fetch("{{ url_for('practice.api_interview_evaluate') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            question: question,
+            type: type,
+            answer: answer
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-cpu-fill me-1"></i> Evaluate Response`;
+
+        document.getElementById("evalPlaceholder").style.display = "none";
+        document.getElementById("evalResultContent").style.display = "block";
+
+        document.getElementById("evalScore").innerText = data.score + "%";
+        document.getElementById("evalFeedbackText").innerText = data.feedback;
+
+        const idContainer = document.getElementById("identifiedConceptsList");
+        idContainer.innerHTML = "";
+        data.identified_concepts.forEach(c => {
+            idContainer.innerHTML += `<span class="badge bg-success-subtle text-success border border-success-subtle small"><i class="bi bi-check me-1"></i>${c}</span>`;
+        });
+        if (data.identified_concepts.length === 0) {
+            idContainer.innerHTML = `<span class="text-muted small">None identified</span>`;
+        }
+
+        const missContainer = document.getElementById("missingConceptsList");
+        missContainer.innerHTML = "";
+        data.missing_concepts.forEach(c => {
+            missContainer.innerHTML += `<span class="badge bg-danger-subtle text-danger border border-danger-subtle small"><i class="bi bi-exclamation me-1"></i>${c}</span>`;
+        });
+        if (data.missing_concepts.length === 0) {
+            missContainer.innerHTML = `<span class="text-success small fw-semibold">All core concepts articulated!</span>`;
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-cpu-fill me-1"></i> Evaluate Response`;
+        alert("Error evaluating response: " + err);
+    });
+}
+</script>
+{% endblock %}

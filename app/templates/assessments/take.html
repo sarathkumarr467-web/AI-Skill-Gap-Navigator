@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Assessment: {{ domain }} — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header with Timer -->
+    <div class="card p-3 mb-4 shadow-sm">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <span class="badge bg-primary text-white mb-1">{{ domain }}</span>
+                <h4 class="fw-bold text-dark mb-0">Technical Knowledge Assessment</h4>
+            </div>
+            <div class="text-end">
+                <span class="stat-label">Elapsed Time</span>
+                <div class="stat-value text-primary fs-4" id="timerDisplay">00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Questions Form -->
+    <form method="POST" action="{{ url_for('assessment.submit') }}" id="assessmentForm">
+        <input type="hidden" name="domain" value="{{ domain }}">
+        <input type="hidden" name="time_taken" id="timeTakenInput" value="0">
+
+        {% for q in questions %}
+        <div class="card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge bg-light text-secondary border small">Question {{ loop.index }} of {{ questions | length }}</span>
+                <div class="d-flex gap-1">
+                    <span class="badge bg-info-subtle text-info border small">{{ q.topic }}</span>
+                    <span class="badge bg-secondary-subtle text-secondary border small">{{ q.difficulty }}</span>
+                </div>
+            </div>
+
+            <h5 class="fw-bold text-dark mb-3">{{ q.question_text }}</h5>
+
+            <div class="options-group">
+                {% for opt in q.options %}
+                <div class="form-check p-3 mb-2 rounded border bg-light" style="cursor: pointer;" onclick="document.getElementById('opt_{{ q.id }}_{{ loop.index0 }}').checked = true;">
+                    <input class="form-check-input" type="radio" name="q_{{ q.id }}" id="opt_{{ q.id }}_{{ loop.index0 }}" value="{{ loop.index0 }}" required>
+                    <label class="form-check-label w-100 fw-medium text-dark ms-2" for="opt_{{ q.id }}_{{ loop.index0 }}" style="cursor: pointer;">
+                        {{ opt }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <a href="{{ url_for('assessment.index') }}" class="btn btn-outline-secondary" onclick="return confirm('Exit without submitting? Your progress will not be saved.');">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm fw-semibold">
+                <i class="bi bi-check2-all me-1"></i> Submit Assessment
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let seconds = 0;
+const timerEl = document.getElementById("timerDisplay");
+const timeInput = document.getElementById("timeTakenInput");
+
+setInterval(() => {
+    seconds++;
+    timeInput.value = seconds;
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    timerEl.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}, 1000);
+</script>
+{% endblock %}

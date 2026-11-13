@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Skill Demand Intelligence — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h3 class="fw-bold text-dark mb-1"><i class="bi bi-graph-up-arrow text-primary me-2"></i>Skill Demand Intelligence</h3>
+        <p class="text-muted">Market frequency analysis and competency requirements across technology career roles derived from official O*NET 28.0/29.0 database benchmarks.</p>
+    </div>
+
+    <!-- Overview Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <span class="stat-label">Tracked Roles</span>
+                <div class="stat-value text-primary">{{ roles | length }}</div>
+                <div class="small text-muted">Benchmark technology careers</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <span class="stat-label">Canonical Competencies</span>
+                <div class="stat-value text-teal">{{ total_tracked_skills }}</div>
+                <div class="small text-muted">Normalized against O*NET &amp; MBPP</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <span class="stat-label">Source Provenance</span>
+                <div class="stat-value text-dark" style="font-size: 1.3rem;">O*NET 28.0</div>
+                <div class="small text-muted">U.S. Dept of Labor / HF Benchmark</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Demand Bar Chart -->
+        <div class="col-lg-7">
+            <div class="card p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3">Market Request Frequency Across Tech Careers</h5>
+                <div style="height: 320px; position: relative;">
+                    <canvas id="demandChart"></canvas>
+                </div>
+                <div class="small text-muted mt-2">
+                    Frequency indicates weighted occurrences across benchmark job profiles (Critical = 2x weight).
+                </div>
+            </div>
+        </div>
+
+        <!-- Demand Ranking Table -->
+        <div class="col-lg-5">
+            <div class="card p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3">Top In-Demand Competencies</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle table-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Skill Name</th>
+                                <th>Market Demand</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for skill, score in demand_ranking %}
+                            <tr>
+                                <td class="fw-bold text-muted">#{{ loop.index }}</td>
+                                <td>
+                                    <span class="fw-semibold text-dark">{{ skill }}</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress flex-grow-1" style="height: 6px;">
+                                            <div class="progress-bar bg-primary" style="width: {{ (score / demand_ranking[0][1]) * 100 }}%;"></div>
+                                        </div>
+                                        <span class="badge bg-light text-dark border small">{{ score }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Career Roles Benchmark Grid -->
+    <div class="card p-4">
+        <h5 class="fw-bold text-dark mb-3">Benchmark Career Profiles &amp; Required Skill Sets</h5>
+        <div class="row g-3">
+            {% for r in roles %}
+            <div class="col-md-4">
+                <div class="p-3 bg-light rounded border h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="fw-bold text-dark mb-0">{{ r.title }}</h6>
+                        <span class="badge bg-primary-subtle text-primary border small">{{ r.soc_code }}</span>
+                    </div>
+                    <div class="text-muted small mb-2">{{ r.description }}</div>
+                    <div class="small fw-semibold text-secondary mb-1">Key Requirements:</div>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for req in r.requirements[:5] %}
+                        <span class="badge bg-white text-dark border small">{{ req.skill.name if req.skill else '' }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                        <span class="text-success small fw-semibold">{{ r.avg_salary_range }}</span>
+                        <a href="{{ url_for('gap.gap_analysis', role_id=r.id) }}" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size: 0.75rem;">
+                            Analyze Gap &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document.getElementById("demandChart").getContext("2d");
+    const labels = [{% for s, score in demand_ranking %}"{{ s }}",{% endfor %}];
+    const data = [{% for s, score in demand_ranking %}{{ score }},{% endfor %}];
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Market Demand Score",
+                data: data,
+                backgroundColor: "#1e3a8a",
+                borderRadius: 4
+            }]
+        },
+        options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { beginAtZero: true }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

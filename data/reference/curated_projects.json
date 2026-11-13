@@ -1,0 +1,145 @@
+[
+  {
+    "id": "PRJ-01",
+    "title": "End-to-End Customer Churn Prediction & Explainability Dashboard",
+    "difficulty": "Intermediate",
+    "target_gap": "Machine Learning Modeling",
+    "skills_developed": [
+      "Python",
+      "Pandas",
+      "Scikit-Learn",
+      "Data Visualization",
+      "Flask / FastAPI"
+    ],
+    "tech_stack": [
+      "Python",
+      "Scikit-Learn",
+      "Flask",
+      "SHAP",
+      "Bootstrap 5"
+    ],
+    "learning_objectives": [
+      "Implement robust feature engineering for tabular data",
+      "Train and compare Random Forest vs Gradient Boosting models",
+      "Integrate SHAP tree explainers to explain predictions to business users",
+      "Deploy an interactive web dashboard for real-time customer risk scoring"
+    ],
+    "expected_deliverables": [
+      "Jupyter notebook documenting exploratory analysis and cross-validation",
+      "Saved model artifact serialized via joblib",
+      "Flask REST endpoint returning prediction and feature importances",
+      "Responsive UI showing customer risk score and key drivers"
+    ],
+    "validation_checklist": [
+      "Split data using stratified K-Fold without target leakage",
+      "Calculate and log ROC-AUC and PR-AUC",
+      "Handle missing categorical and continuous values cleanly in pipeline",
+      "Unit test API endpoint for valid JSON payload response"
+    ],
+    "portfolio_value": "Demonstrates commercial ML intuition, clean pipeline engineering, and model interpretability."
+  },
+  {
+    "id": "PRJ-02",
+    "title": "Production REST API for Real-Time Sentiment & NLP Classification",
+    "difficulty": "Intermediate",
+    "target_gap": "Natural Language Processing",
+    "skills_developed": [
+      "Python",
+      "Natural Language Processing",
+      "Flask / FastAPI",
+      "Docker & Containerization"
+    ],
+    "tech_stack": [
+      "Python",
+      "Scikit-Learn / PyTorch",
+      "FastAPI",
+      "Docker"
+    ],
+    "learning_objectives": [
+      "Preprocess raw text data (tokenization, lemmatization, stop words)",
+      "Build TF-IDF and transformer-based sentence classification pipelines",
+      "Wrap model in FastAPI with async request processing and Pydantic validation",
+      "Containerize service using multi-stage Docker build"
+    ],
+    "expected_deliverables": [
+      "FastAPI application with /predict and /health endpoints",
+      "Swagger OpenAPI interactive documentation",
+      "Dockerfile and docker-compose.yml configuration",
+      "Benchmark report showing latency (p95 < 50ms)"
+    ],
+    "validation_checklist": [
+      "Validate input text size limits to prevent memory exhaustion",
+      "Implement error handlers for empty or non-English inputs",
+      "Multi-stage Docker image under 300MB",
+      "Include automated Pytest test suite"
+    ],
+    "portfolio_value": "Shows software engineering rigor, containerization, and API production readiness."
+  },
+  {
+    "id": "PRJ-03",
+    "title": "Distributed Data Warehouse & Analytics Pipeline with SQL & Parquet",
+    "difficulty": "Beginner",
+    "target_gap": "SQL",
+    "skills_developed": [
+      "SQL",
+      "Python",
+      "Pandas"
+    ],
+    "tech_stack": [
+      "PostgreSQL / DuckDB",
+      "Python",
+      "Pandas",
+      "SQLAlchemy"
+    ],
+    "learning_objectives": [
+      "Design normalized relational schemas (3NF) and star-schema dimensional models",
+      "Execute complex analytical window queries, CTEs, and cohort retention tables",
+      "Automate batch ETL pipeline from CSV/Parquet into structured database tables"
+    ],
+    "expected_deliverables": [
+      "DDL schema migration scripts with primary & foreign keys",
+      "ETL Python script with logging and idempotency checks",
+      "Analytical report answering 5 key operational business questions"
+    ],
+    "validation_checklist": [
+      "All tables indexed appropriately on join keys",
+      "Zero data truncation during ETL pipeline run",
+      "Verified referential integrity constraints"
+    ],
+    "portfolio_value": "Proves fundamental database architecture, clean SQL proficiency, and data engineering ability."
+  },
+  {
+    "id": "PRJ-04",
+    "title": "Automated MLOps Pipeline: Drift Detection & Continuous Model Retraining",
+    "difficulty": "Advanced",
+    "target_gap": "MLOps & Model Deployment",
+    "skills_developed": [
+      "MLOps & Model Deployment",
+      "Docker & Containerization",
+      "Git & Version Control"
+    ],
+    "tech_stack": [
+      "Python",
+      "Docker",
+      "Evidently AI / Custom Drift",
+      "GitHub Actions",
+      "FastAPI"
+    ],
+    "learning_objectives": [
+      "Detect covariate and concept drift between training and production distributions",
+      "Automate testing and validation of newly trained candidate models",
+      "Implement canary deployment pattern with zero-downtime rollback"
+    ],
+    "expected_deliverables": [
+      "Drift detection script calculating Kolmogorov-Smirnov and PSI metrics",
+      "CI/CD workflow file for GitHub Actions executing automated tests",
+      "Monitoring dashboard tracking prediction drift over time"
+    ],
+    "validation_checklist": [
+      "Alert triggers when PSI > 0.2",
+      "Automated rollback when candidate model fails validation gate",
+      "Dockerized reproducible runner"
+    ],
+    "portfolio_value": "Highlights elite MLOps engineering practices demanded by top technology teams."
+  }
+]

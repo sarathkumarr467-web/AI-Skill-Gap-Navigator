@@ -1,0 +1,185 @@
+{
+  "Python": {
+    "category": "Programming Languages",
+    "domain": "Core",
+    "prerequisites": [],
+    "importance": "Critical",
+    "description": "General-purpose programming language widely used in AI, ML, Web, and Automation."
+  },
+  "Object-Oriented Programming": {
+    "category": "Software Engineering",
+    "domain": "Core",
+    "prerequisites": [
+      "Python"
+    ],
+    "importance": "High",
+    "description": "Design patterns, classes, inheritance, encapsulation, and modular code architecture."
+  },
+  "Data Structures & Algorithms": {
+    "category": "Computer Science",
+    "domain": "Core",
+    "prerequisites": [
+      "Python"
+    ],
+    "importance": "Critical",
+    "description": "Arrays, linked lists, trees, graphs, sorting, searching, and algorithmic complexity (Big O)."
+  },
+  "SQL": {
+    "category": "Database",
+    "domain": "Data Management",
+    "prerequisites": [],
+    "importance": "Critical",
+    "description": "Structured Query Language for querying, schema design, indexing, and data modeling."
+  },
+  "Git & Version Control": {
+    "category": "DevOps / Tools",
+    "domain": "Core",
+    "prerequisites": [],
+    "importance": "High",
+    "description": "Branching, merging, pull requests, commit hygiene, and collaborative version control."
+  },
+  "NumPy": {
+    "category": "Data Science Libraries",
+    "domain": "Data Science",
+    "prerequisites": [
+      "Python"
+    ],
+    "importance": "Critical",
+    "description": "N-dimensional array operations, vectorized linear algebra, and mathematical computing."
+  },
+  "Pandas": {
+    "category": "Data Science Libraries",
+    "domain": "Data Science",
+    "prerequisites": [
+      "Python",
+      "NumPy"
+    ],
+    "importance": "Critical",
+    "description": "Data manipulation, DataFrame cleaning, aggregation, reshaping, and time-series handling."
+  },
+  "Data Visualization": {
+    "category": "Data Science",
+    "domain": "Data Science",
+    "prerequisites": [
+      "Python",
+      "Pandas"
+    ],
+    "importance": "Medium",
+    "description": "Exploratory data analysis using Matplotlib, Seaborn, and Chart.js."
+  },
+  "Applied Statistics": {
+    "category": "Mathematics",
+    "domain": "Data Science",
+    "prerequisites": [
+      "Python"
+    ],
+    "importance": "High",
+    "description": "Probability distributions, hypothesis testing, p-values, regression, and Bayesian concepts."
+  },
+  "Scikit-Learn": {
+    "category": "Machine Learning",
+    "domain": "AI / ML",
+    "prerequisites": [
+      "Python",
+      "NumPy",
+      "Pandas",
+      "Applied Statistics"
+    ],
+    "importance": "Critical",
+    "description": "Classical machine learning algorithms: classification, regression, clustering, and cross-validation."
+  },
+  "Machine Learning Modeling": {
+    "category": "Machine Learning",
+    "domain": "AI / ML",
+    "prerequisites": [
+      "Scikit-Learn"
+    ],
+    "importance": "Critical",
+    "description": "Feature engineering, hyperparameter tuning, model evaluation (ROC, PR, F1), and model drift."
+  },
+  "Deep Learning": {
+    "category": "Deep Learning",
+    "domain": "AI / ML",
+    "prerequisites": [
+      "Machine Learning Modeling",
+      "NumPy"
+    ],
+    "importance": "High",
+    "description": "Neural network architectures: feedforward, CNNs, RNNs, backpropagation, and loss functions."
+  },
+  "PyTorch": {
+    "category": "Deep Learning Frameworks",
+    "domain": "AI / ML",
+    "prerequisites": [
+      "Deep Learning",
+      "Python"
+    ],
+    "importance": "High",
+    "description": "Dynamic computation graphs, tensor operations, custom training loops, and PyTorch modules."
+  },
+  "Natural Language Processing": {
+    "category": "AI Specialization",
+    "domain": "AI / ML",
+    "prerequisites": [
+      "Deep Learning",
+      "Python"
+    ],
+    "importance": "High",
+    "description": "Text tokenization, TF-IDF, embeddings, transformers, and sequence classification."
+  },
+  "Computer Vision": {
+    "category": "AI Specialization",
+    "domain": "AI / ML",
+    "prerequisites": [
+      "Deep Learning",
+      "NumPy"
+    ],
+    "importance": "Medium",
+    "description": "Image processing, convolution, object detection, segmentation, and OpenCV."
+  },
+  "Flask / FastAPI": {
+    "category": "Backend Frameworks",
+    "domain": "Software Engineering",
+    "prerequisites": [
+      "Python"
+    ],
+    "importance": "High",
+    "description": "RESTful API development, request handling, routing, serialization, and middleware."
+  },
+  "Docker & Containerization": {
+    "category": "DevOps",
+    "domain": "Infrastructure",
+    "prerequisites": [
+      "Git & Version Control"
+    ],
+    "importance": "High",
+    "description": "Building reproducible Dockerfiles, multi-stage builds, container networking, and volumes."
+  },
+  "MLOps & Model Deployment": {
+    "category": "MLOps",
+    "domain": "AI / ML",
+    "prerequisites": [
+      "Machine Learning Modeling",
+      "Flask / FastAPI",
+      "Docker & Containerization"
+    ],
+    "importance": "High",
+    "description": "Deploying models as microservices, pipeline monitoring, versioning, and CI/CD."
+  },
+  "Cloud Computing (AWS/GCP/Azure)": {
+    "category": "Cloud Infrastructure",
+    "domain": "Infrastructure",
+    "prerequisites": [
+      "Docker & Containerization"
+    ],
+    "importance": "Medium",
+    "description": "Cloud compute instances, object storage (S3), serverless functions, and managed databases."
+  },
+  "HTML / CSS / JavaScript": {
+    "category": "Frontend Development",
+    "domain": "Web Development",
+    "prerequisites": [],
+    "importance": "Medium",
+    "description": "Semantic markup, responsive UI layouts, DOM manipulation, and asynchronous HTTP calls."
+  }
+}

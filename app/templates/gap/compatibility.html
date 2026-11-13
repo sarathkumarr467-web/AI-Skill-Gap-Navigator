@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Multi-Job Compatibility Engine — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h3 class="fw-bold text-dark mb-1"><i class="bi bi-shuffle text-primary me-2"></i>Multi-Job Compatibility Engine</h3>
+        <p class="text-muted">Simultaneously evaluate your verified skills across multiple benchmark career roles to discover your highest fit and transferable strengths.</p>
+    </div>
+
+    <!-- Comparative Radar / Bar Comparison Chart -->
+    <div class="card p-4 mb-4">
+        <h5 class="fw-bold text-dark mb-3">Career Compatibility Index Across Tech Paths</h5>
+        <div style="height: 260px; position: relative;">
+            <canvas id="compatChart"></canvas>
+        </div>
+        <div class="small text-muted text-center mt-2">
+            Compatibility percentage represents the weighted overlap between your demonstrated skills and each role's requirements.
+        </div>
+    </div>
+
+    <!-- Multi-Job Compatibility Table -->
+    <div class="card p-4 mb-4">
+        <h5 class="fw-bold text-dark mb-3">Role-by-Role Fit Matrix</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle table-custom mb-0">
+                <thead>
+                    <tr>
+                        <th>Career Role</th>
+                        <th>Domain</th>
+                        <th>Compatibility Score</th>
+                        <th>Matched Skills</th>
+                        <th>Missing Qualifications</th>
+                        <th>Market Outlook</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in comparison %}
+                    <tr>
+                        <td>
+                            <div class="fw-bold text-dark fs-6">{{ item.role_title }}</div>
+                            <span class="badge {{ 'bg-success-subtle text-success' if item.compatibility_score >= 70 else ('bg-primary-subtle text-primary' if item.compatibility_score >= 50 else 'bg-warning-subtle text-warning') }} border small">
+                                {{ item.status }}
+                            </span>
+                        </td>
+                        <td class="text-muted small">{{ item.domain }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="width: 80px; height: 8px;">
+                                    <div class="progress-bar {{ 'bg-success' if item.compatibility_score >= 70 else ('bg-primary' if item.compatibility_score >= 50 else 'bg-warning') }}" style="width: {{ item.compatibility_score }}%;"></div>
+                                </div>
+                                <span class="fw-bold fs-6">{{ item.compatibility_score }}%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-success-subtle text-success border">{{ item.matched_count }} verified</span>
+                            <div class="d-flex flex-wrap gap-1 mt-1" style="max-width: 220px;">
+                                {% for s in item.matched_skills[:3] %}
+                                <span class="badge bg-light text-dark border small" style="font-size: 0.7rem;">{{ s }}</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-danger-subtle text-danger border">{{ item.missing_count }} missing</span>
+                            <div class="d-flex flex-wrap gap-1 mt-1" style="max-width: 220px;">
+                                {% for s in item.missing_skills[:3] %}
+                                <span class="badge bg-light text-muted border small" style="font-size: 0.7rem;">{{ s.skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td class="small">
+                            <div class="fw-semibold text-dark">{{ item.avg_salary }}</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">{{ item.growth_outlook }}</div>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('gap.gap_analysis', role_id=item.role_id) }}" class="btn btn-sm btn-outline-primary text-nowrap">
+                                Analyze Gap &rarr;
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document.getElementById("compatChart").getContext("2d");
+    const labels = [{% for item in comparison %}"{{ item.role_title }}",{% endfor %}];
+    const data = [{% for item in comparison %}{{ item.compatibility_score }},{% endfor %}];
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Compatibility (%)",
+                data: data,
+                backgroundColor: data.map(v => v >= 70 ? "#0d9488" : (v >= 50 ? "#1e3a8a" : "#f59e0b")),
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    min: 0,
+                    max: 100,
+                    ticks: { callback: v => v + "%" }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

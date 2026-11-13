@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Personalized Learning Roadmap — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="bi bi-signpost-split text-primary me-2"></i>Personalized Learning Roadmap</h3>
+            <p class="text-muted mb-0">Dynamic week-by-week curriculum sequenced via topological prerequisite sorting to eliminate your target career gaps.</p>
+        </div>
+
+        <!-- Regenerate Modal / Form -->
+        <form method="POST" action="{{ url_for('learning.generate_roadmap') }}" class="d-flex align-items-center gap-2">
+            <label class="small fw-semibold text-secondary text-nowrap">Weekly Hours:</label>
+            <input type="number" name="weekly_hours" class="form-control form-control-sm" style="width: 80px;" value="{{ roadmap.weekly_hours if roadmap else 10 }}" min="4" max="50">
+            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">
+                <i class="bi bi-arrow-clockwise me-1"></i> Recalibrate Roadmap
+            </button>
+        </form>
+    </div>
+
+    {% if roadmap %}
+    <!-- Roadmap Stats Overview -->
+    <div class="card p-4 mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+                <span class="badge bg-primary text-white mb-1">Target Career: {{ roadmap.target_role }}</span>
+                <h5 class="fw-bold text-dark mb-0">{{ roadmap.total_weeks }}-Week Mastery Trajectory</h5>
+                <div class="text-muted small mt-1">Calibrated at {{ roadmap.weekly_hours }} study hours/week &bull; Topological Prerequisite Order</div>
+            </div>
+
+            <div class="text-md-end">
+                <span class="stat-label">Curriculum Progress</span>
+                <div class="stat-value text-teal">{{ roadmap.to_dict().progress_pct }}%</div>
+                <div class="small text-muted">{{ roadmap.to_dict().completed_milestones }} of {{ roadmap.to_dict().total_milestones }} Milestones Completed</div>
+            </div>
+        </div>
+
+        <div class="progress mt-3" style="height: 10px;">
+            <div class="progress-bar bg-teal" style="width: {{ roadmap.to_dict().progress_pct }}%;"></div>
+        </div>
+    </div>
+
+    <!-- Milestones Timeline List -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <h5 class="fw-bold text-dark mb-3">Weekly Structured Milestones</h5>
+
+            <div class="d-flex flex-column gap-3">
+                {% for m in roadmap.milestones %}
+                <div class="card p-4 border {{ 'border-success bg-white' if m.is_completed else 'bg-white' }}">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3">
+                        <div class="d-flex gap-3 align-items-start">
+                            <form method="POST" action="{{ url_for('learning.toggle_milestone', milestone_id=m.id) }}" class="m-0">
+                                <button type="submit" class="btn btn-sm p-0 border-0 bg-transparent" title="Toggle milestone completion">
+                                    <i class="bi {{ 'bi-check-circle-fill text-success fs-3' if m.is_completed else 'bi-circle text-muted fs-3' }}"></i>
+                                </button>
+                            </form>
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-primary-subtle text-primary border small">Week {{ m.week_number }}</span>
+                                    <span class="badge bg-light text-secondary border small">{{ m.skill_name }}</span>
+                                    {% if m.is_completed %}
+                                    <span class="badge bg-success-subtle text-success border small">Completed</span>
+                                    {% endif %}
+                                </div>
+                                <h5 class="fw-bold {{ 'text-decoration-line-through text-muted' if m.is_completed else 'text-dark' }} mb-2">
+                                    {{ m.title }}
+                                </h5>
+
+                                <!-- Objectives -->
+                                <div class="mb-2">
+                                    <span class="small fw-semibold text-secondary">Learning Objectives:</span>
+                                    <ul class="small text-muted mb-2 ps-3">
+                                        {% for obj in m.objectives %}
+                                        <li>{{ obj }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+
+                                <!-- Practice Tasks -->
+                                <div class="mb-2">
+                                    <span class="small fw-semibold text-secondary">Practical Exercises:</span>
+                                    <ul class="small text-muted mb-0 ps-3">
+                                        {% for t in m.practice_tasks %}
+                                        <li>{{ t }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Action / Resources Links -->
+                        <div class="text-md-end text-nowrap">
+                            {% if m.resources %}
+                            <div class="small fw-semibold text-secondary mb-1">Recommended Material:</div>
+                            {% for r in m.resources %}
+                            <a href="{{ r.url }}" target="_blank" rel="noopener" class="btn btn-xs btn-outline-primary d-block mb-1 text-truncate" style="max-width: 180px; font-size: 0.75rem;">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> {{ r.title[:20] }}...
+                            </a>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card p-5 text-center text-muted">
+        <i class="bi bi-signpost-split fs-1 text-primary mb-3"></i>
+        <h5 class="fw-bold text-dark">No Active Roadmap</h5>
+        <p class="small text-muted mb-4">Click below to generate a tailored curriculum based on your identified skill gaps.</p>
+        <div>
+            <form method="POST" action="{{ url_for('learning.generate_roadmap') }}">
+                <button type="submit" class="btn btn-primary px-4">Generate Personalized Roadmap</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

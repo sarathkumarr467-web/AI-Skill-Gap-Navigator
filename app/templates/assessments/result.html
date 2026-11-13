@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Assessment Result — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Top Score Summary Banner -->
+    <div class="card p-4 mb-4 text-center">
+        <span class="badge bg-primary-subtle text-primary border mx-auto px-3 py-1 mb-2">
+            {{ attempt.domain }} Assessment Result
+        </span>
+        <h2 class="fw-bold text-dark mb-1">
+            You Scored {{ attempt.score }} / {{ attempt.total_points }}
+        </h2>
+        <div class="display-5 fw-bold text-{{ 'success' if attempt.percentage >= 70 else ('primary' if attempt.percentage >= 50 else 'danger') }} mb-2">
+            {{ attempt.percentage | round_pct }}
+        </div>
+        <p class="text-muted small mx-auto" style="max-width: 500px;">
+            Completed on {{ attempt.to_dict().completed_at }} in {{ attempt.time_taken_seconds }} seconds. Your demonstrated proficiency has been updated in your verified evidence portfolio.
+        </p>
+
+        <div class="d-flex justify-content-center gap-2 mt-2">
+            <a href="{{ url_for('gap.gap_analysis') }}" class="btn btn-primary btn-sm px-3">
+                <i class="bi bi-bullseye me-1"></i> View Updated Skill Gap Report
+            </a>
+            <a href="{{ url_for('assessment.index') }}" class="btn btn-outline-secondary btn-sm px-3">
+                <i class="bi bi-arrow-left me-1"></i> All Assessments
+            </a>
+        </div>
+    </div>
+
+    <!-- Skill & Topic Breakdown -->
+    <div class="row g-4 mb-4">
+        <!-- Breakdown Table -->
+        <div class="col-lg-7">
+            <div class="card p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3">Skill-Wise Performance Breakdown</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle table-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th>Skill Competency</th>
+                                <th>Correct / Total</th>
+                                <th>Proficiency</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for skill, stats in attempt.skill_breakdown.items() %}
+                            <tr>
+                                <td class="fw-semibold text-dark">{{ skill }}</td>
+                                <td>{{ stats.correct }} / {{ stats.total }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress flex-grow-1" style="height: 6px;">
+                                            <div class="progress-bar {{ 'bg-success' if stats.percentage >= 70 else ('bg-warning' if stats.percentage >= 50 else 'bg-danger') }}" style="width: {{ stats.percentage }}%;"></div>
+                                        </div>
+                                        <span class="small fw-bold">{{ stats.percentage }}%</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge {{ 'bg-success-subtle text-success' if stats.percentage >= 70 else 'bg-danger-subtle text-danger' }} border small">
+                                        {{ 'Verified' if stats.percentage >= 70 else 'Needs Practice' }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weak Topics Identified -->
+        <div class="col-lg-5">
+            <div class="card p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>Identified Weak Topics
+                </h5>
+                {% if attempt.weak_topics %}
+                <p class="small text-muted mb-3">
+                    You missed questions covering the following topics. These have been prioritized in your personalized learning roadmap:
+                </p>
+                <div class="d-flex flex-column gap-2 mb-3">
+                    {% for wt in attempt.weak_topics %}
+                    <div class="p-2 bg-light rounded border d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold text-danger small"><i class="bi bi-x-circle me-1"></i>{{ wt }}</span>
+                        <a href="{{ url_for('learning.resources') }}" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size: 0.75rem;">
+                            Learn &rarr;
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4 text-success">
+                    <i class="bi bi-check-circle-fill fs-1 mb-2 d-block"></i>
+                    <h6 class="fw-bold">Flawless Performance!</h6>
+                    <span class="small text-muted">No weak topics were identified in this session.</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Answer Review -->
+    <div class="card p-4">
+        <h5 class="fw-bold text-dark mb-3">Question-by-Question Review</h5>
+        <div class="list-group list-group-flush">
+            {% for ans in attempt.answers %}
+            <div class="list-group-item px-0 py-3 border-bottom">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="badge {{ 'bg-success-subtle text-success' if ans.is_correct else 'bg-danger-subtle text-danger' }} border">
+                        <i class="bi {{ 'bi-check-circle-fill' if ans.is_correct else 'bi-x-circle-fill' }} me-1"></i>
+                        {{ 'Correct (+1 pt)' if ans.is_correct else 'Incorrect (0 pts)' }}
+                    </span>
+                    <span class="small text-muted">Topic: {{ ans.topic }}</span>
+                </div>
+                <div class="fw-semibold text-dark my-2">
+                    Question #{{ loop.index }} ({{ ans.skill_name }})
+                </div>
+                <div class="small text-muted">
+                    Your Selection: <strong>Option {{ ans.selected_option + 1 }}</strong> &bull;
+                    Correct Answer: <strong class="text-success">Option {{ ans.correct_option + 1 }}</strong>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

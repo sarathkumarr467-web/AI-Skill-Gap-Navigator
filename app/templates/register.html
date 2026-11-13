@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Register Candidate — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm border-0">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex justify-content-center align-items-center bg-teal text-white rounded-circle mb-3" style="width: 54px; height: 54px;">
+                        <i class="bi bi-person-plus-fill fs-3"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark">Create Candidate Profile</h4>
+                    <p class="text-muted small">Begin your personalized skill gap analysis</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('auth.register') }}">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Full Name</label>
+                        <input type="text" name="full_name" class="form-control" required placeholder="e.g. Sarathkumar R">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Email Address</label>
+                        <input type="email" name="email" class="form-control" required placeholder="e.g. sarathkumar@example.com">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Password</label>
+                        <input type="password" name="password" class="form-control" required placeholder="Minimum 8 characters">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Target Career Role</label>
+                        <select name="target_career" class="form-select">
+                            {% for r in roles %}
+                            <option value="{{ r.title }}" {% if r.title == 'AI Engineer' %}selected{% endif %}>
+                                {{ r.title }} ({{ r.domain }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text small">Your assessments and roadmap will calibrate against this role's O*NET benchmarks.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-semibold text-secondary">Weekly Study Commitment (Hours)</label>
+                        <input type="number" name="study_hours_per_week" class="form-control" min="2" max="60" value="10">
+                        <div class="form-text small">Used by the roadmap generator and career simulator to estimate completion timelines.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                        <i class="bi bi-person-check me-1"></i> Register &amp; Start Analysis
+                    </button>
+                </form>
+
+                <div class="text-center mt-4 text-muted small">
+                    Already registered? <a href="{{ url_for('auth.login') }}" class="fw-semibold text-primary">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

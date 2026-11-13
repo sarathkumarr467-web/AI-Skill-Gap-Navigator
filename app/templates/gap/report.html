@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Skill Gap Analysis Report — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="bi bi-clipboard2-data text-primary me-2"></i>Personalized Skill Gap Report</h3>
+            <p class="text-muted mb-0">Evidence-based gap analysis comparing your demonstrated proficiency against benchmark career requirements.</p>
+        </div>
+
+        <!-- Role Selector Form -->
+        <form method="GET" action="{{ url_for('gap.gap_analysis') }}" class="d-flex align-items-center gap-2">
+            <label class="small fw-semibold text-secondary text-nowrap">Target Role:</label>
+            <select name="role_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                {% for r in all_roles %}
+                <option value="{{ r.id }}" {% if r.id == role.id %}selected{% endif %}>
+                    {{ r.title }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <!-- Diagnostic Score Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card p-3">
+                <span class="stat-label">Target Role</span>
+                <div class="fw-bold text-dark fs-5 mt-1">{{ role.title }}</div>
+                <div class="small text-muted">{{ role.domain }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <span class="stat-label">Calculated Readiness</span>
+                <div class="stat-value text-{{ readiness.badge_color }}">{{ readiness.score }}%</div>
+                <div class="small text-muted">{{ readiness.category }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <span class="stat-label">Skill Coverage</span>
+                <div class="stat-value text-info">{{ analysis.skill_coverage_pct }}%</div>
+                <div class="small text-muted">{{ analysis.verified_count }} of {{ analysis.total_requirements }} requirements met</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <span class="stat-label">Critical Gaps</span>
+                <div class="stat-value text-danger">{{ analysis.missing_count }}</div>
+                <div class="small text-muted">{{ analysis.improvement_count }} skills need improvement</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Critical Missing Skills with Priority Optimizer Breakdown (Feature 18) -->
+    <div class="card p-4 mb-4 border-danger">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-exclamation-octagon-fill text-danger me-2"></i>Prioritized Critical Competencies
+                </h5>
+                <span class="small text-muted">Feature 18: Optimized by criticality, proficiency deficit, and prerequisite leverage.</span>
+            </div>
+            <a href="{{ url_for('learning.roadmap') }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-signpost-split me-1"></i> Generate Roadmap
+            </a>
+        </div>
+
+        {% if analysis.critical_gaps %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle table-custom mb-0">
+                <thead>
+                    <tr>
+                        <th>Competency</th>
+                        <th>Required Level</th>
+                        <th>Current Score</th>
+                        <th>Priority Score</th>
+                        <th>Explainable Priority Reason</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gap in analysis.critical_gaps %}
+                    <tr>
+                        <td class="fw-bold text-dark">
+                            {{ gap.skill }}
+                            <div class="small text-muted fw-normal">{{ gap.category }}</div>
+                        </td>
+                        <td><span class="badge bg-light text-dark border">{{ gap.required_proficiency }}%</span></td>
+                        <td><span class="badge bg-danger-subtle text-danger border">0% (Missing)</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="width: 60px; height: 6px;">
+                                    <div class="progress-bar bg-danger" style="width: {{ gap.priority.score }}%;"></div>
+                                </div>
+                                <span class="fw-bold text-danger">{{ gap.priority.score }}</span>
+                            </div>
+                        </td>
+                        <td class="small text-muted" style="max-width: 320px;">
+                            {{ gap.priority.explanation }}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('learning.resources', skill=gap.skill) }}" class="btn btn-xs btn-outline-primary py-1 px-2 small">
+                                Learn &rarr;
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-success text-center py-3">
+            <i class="bi bi-check-circle-fill fs-2 d-block mb-1"></i>
+            No critical gaps found for this role!
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Skills Needing Improvement -->
+    {% if analysis.improvement_gaps %}
+    <div class="card p-4 mb-4 border-warning">
+        <h5 class="fw-bold text-dark mb-3">
+            <i class="bi bi-arrow-up-circle-fill text-warning me-2"></i>Skills Requiring Improvement
+        </h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle table-custom mb-0">
+                <thead>
+                    <tr>
+                        <th>Competency</th>
+                        <th>Current Demonstrated</th>
+                        <th>Required Benchmark</th>
+                        <th>Deficit</th>
+                        <th>Evidence Source</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gap in analysis.improvement_gaps %}
+                    <tr>
+                        <td class="fw-semibold text-dark">{{ gap.skill }}</td>
+                        <td><span class="badge bg-warning-subtle text-dark border">{{ gap.current_proficiency }}%</span></td>
+                        <td><span class="badge bg-light text-dark border">{{ gap.required_proficiency }}%</span></td>
+                        <td><span class="text-danger fw-bold">-{{ gap.deficit }} pts</span></td>
+                        <td class="small text-muted">{{ gap.verification_status }}</td>
+                        <td>
+                            <a href="{{ url_for('assessment.take', domain=gap.skill) }}" class="btn btn-xs btn-outline-warning py-1 px-2 small text-dark">
+                                Retest &rarr;
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Verified Candidate Strengths -->
+    <div class="card p-4">
+        <h5 class="fw-bold text-dark mb-3">
+            <i class="bi bi-shield-check text-success me-2"></i>Verified Candidate Strengths
+        </h5>
+        {% if analysis.verified_skills %}
+        <div class="row g-3">
+            {% for s in analysis.verified_skills %}
+            <div class="col-md-4">
+                <div class="p-3 bg-light rounded border d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="fw-bold text-dark">{{ s.skill }}</div>
+                        <div class="small text-muted">{{ s.evidence_source }} &bull; {{ s.verification_status }}</div>
+                    </div>
+                    <span class="badge bg-success text-white fs-6">{{ s.current_proficiency }}%</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted small mb-0">No verified skills recorded yet. Complete assessments or upload a resume to record evidence.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Solve Challenge #{{ challenge.task_id }} — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb & Nav -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="{{ url_for('practice.coding_index') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back to Challenges
+        </a>
+        <div class="d-flex gap-2">
+            <span class="badge bg-primary text-white">Task #{{ challenge.task_id }}</span>
+            <span class="badge bg-light text-dark border">{{ challenge.topic }}</span>
+            <span class="badge bg-secondary text-white">{{ challenge.difficulty }}</span>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Problem Description Left Column -->
+        <div class="col-lg-5">
+            <div class="card p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3">Problem Statement</h5>
+                <p class="text-dark mb-4 lead fs-6">{{ challenge.description }}</p>
+
+                <div class="p-3 bg-light rounded border mb-4">
+                    <span class="small fw-semibold text-secondary d-block mb-1">Expected Function Signature:</span>
+                    <code class="text-primary fw-bold">def {{ challenge.function_name }}(...)</code>
+                </div>
+
+                <div class="p-3 bg-light rounded border mb-4">
+                    <span class="small fw-semibold text-secondary d-block mb-1">Sample Unit Test:</span>
+                    <code class="text-dark">{{ challenge.sample_test }}</code>
+                </div>
+
+                <div class="alert alert-info py-2 px-3 small mb-3">
+                    <i class="bi bi-shield-lock me-1"></i>
+                    <strong>Sandbox Security:</strong> Arbitrary OS commands, filesystem writes, and network sockets are blocked via AST screening.
+                </div>
+
+                <!-- Reference Solution Toggle -->
+                <div class="mt-auto pt-3 border-top">
+                    <button class="btn btn-sm btn-outline-secondary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#refSolCollapse">
+                        <i class="bi bi-code-square me-1"></i> View Reference Solution
+                    </button>
+                    <div class="collapse mt-2" id="refSolCollapse">
+                        <pre class="p-2 bg-dark text-light rounded small mb-0"><code>{{ challenge.reference_solution }}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Editor & Sandbox Console Right Column -->
+        <div class="col-lg-7">
+            <div class="card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-bold text-dark mb-0"><i class="bi bi-code-slash text-primary me-2"></i>Python Code Editor</h5>
+                    <button class="btn btn-xs btn-outline-secondary" onclick="resetStarterCode()">Reset</button>
+                </div>
+
+                <div class="mb-3">
+                    <textarea id="codeEditor" class="form-control font-monospace bg-light p-3" rows="12" style="font-size: 0.95rem; line-height: 1.5;">{{ challenge.starter_code }}</textarea>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="small text-muted" id="evalStatusText">Ready for execution</span>
+                    <button class="btn btn-primary px-4 fw-semibold" id="runCodeBtn" onclick="submitCode()">
+                        <i class="bi bi-play-circle-fill me-1"></i> Run in Sandbox
+                    </button>
+                </div>
+
+                <!-- Live Execution Console -->
+                <div class="p-3 bg-dark text-white rounded border" style="min-height: 140px; font-family: monospace; font-size: 0.85rem;">
+                    <div class="d-flex justify-content-between text-secondary border-bottom border-secondary pb-1 mb-2">
+                        <span>SANDBOX OUTPUT TERMINAL</span>
+                        <span id="testsPassedIndicator">Tests: &mdash;</span>
+                    </div>
+                    <div id="consoleOutput" class="text-light" style="white-space: pre-wrap;">Awaiting code submission...</div>
+                </div>
+            </div>
+
+            <!-- Past Submissions for This Problem -->
+            {% if past_subs %}
+            <div class="card p-3 mt-4">
+                <h6 class="fw-bold text-dark mb-2">Previous Attempts on this Task</h6>
+                <div class="list-group list-group-flush small">
+                    {% for sub in past_subs[:3] %}
+                    <div class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge {{ 'bg-success' if sub.status == 'PASSED' else 'bg-danger' }} me-2">{{ sub.status }}</span>
+                            <span>{{ sub.passed_tests }} / {{ sub.total_tests }} tests passed</span>
+                        </div>
+                        <span class="text-muted">{{ sub.to_dict().submitted_at }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const starterCode = `{{ challenge.starter_code }}`;
+
+function resetStarterCode() {
+    document.getElementById("codeEditor").value = starterCode;
+}
+
+function submitCode() {
+    const code = document.getElementById("codeEditor").value;
+    const btn = document.getElementById("runCodeBtn");
+    const statusText = document.getElementById("evalStatusText");
+    const consoleOutput = document.getElementById("consoleOutput");
+    const testsIndicator = document.getElementById("testsPassedIndicator");
+
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Executing...`;
+    statusText.innerText = "Running AST checks and sandboxed assertions...";
+    consoleOutput.innerText = "Executing in isolated subprocess...";
+
+    fetch("{{ url_for('practice.api_coding_submit') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            task_id: {{ challenge.task_id }},
+            code: code
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-play-circle-fill me-1"></i> Run in Sandbox`;
+
+        if (data.status === "PASSED") {
+            statusText.innerHTML = `<span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>All ${data.passed_tests} Tests Passed!</span>`;
+            consoleOutput.className = "text-success";
+            consoleOutput.innerText = "SUCCESS! All unit test assertions passed without runtime errors.\n\n" + data.output;
+            testsIndicator.innerHTML = `<span class="text-success">${data.passed_tests} / ${data.total_tests} PASSED</span>`;
+        } else {
+            statusText.innerHTML = `<span class="text-danger fw-bold"><i class="bi bi-x-circle-fill me-1"></i>${data.status}</span>`;
+            consoleOutput.className = "text-warning";
+            consoleOutput.innerText = (data.output || data.error || "Execution failed.");
+            testsIndicator.innerHTML = `<span class="text-danger">${data.passed_tests} / ${data.total_tests} PASSED</span>`;
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-play-circle-fill me-1"></i> Run in Sandbox`;
+        statusText.innerText = "Error executing request.";
+        consoleOutput.innerText = "Connection error: " + err;
+    });
+}
+</script>
+{% endblock %}

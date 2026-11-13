@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Skill Analyzer — SkillBridge AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h3 class="fw-bold text-dark mb-1"><i class="bi bi-file-earmark-person text-primary me-2"></i>Smart Resume Skill Extractor</h3>
+        <p class="text-muted">Upload your technical resume or paste raw text to extract verified competencies and predict your career domain via trained NLP models.</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Input Form -->
+        <div class="col-lg-5">
+            <div class="card p-4">
+                <h5 class="fw-bold text-dark mb-3">Submit Resume Document</h5>
+                <form method="POST" action="{{ url_for('analyzer.resume_analyzer') }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Upload File (PDF, DOCX, TXT)</label>
+                        <input type="file" name="resume_file" class="form-control" accept=".pdf,.docx,.txt">
+                        <div class="form-text small">Scanned image PDFs without selectable text will require OCR.</div>
+                    </div>
+
+                    <div class="text-center my-2 text-muted small fw-semibold">&mdash; OR PASTE TEXT &mdash;</div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Resume Plain Text</label>
+                        <textarea name="resume_text" id="resumeTextArea" class="form-control" rows="8" placeholder="Paste your resume work experience, skills section, and projects here..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="loadSampleResume()">
+                            <i class="bi bi-file-text me-1"></i> Load Sample Resume
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="document.getElementById('resumeTextArea').value=''">
+                            Clear
+                        </button>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                        <i class="bi bi-cpu me-1"></i> Parse &amp; Extract Skills
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Extraction & Classification Results -->
+        <div class="col-lg-7">
+            {% if result %}
+            <div class="card p-4 mb-4 border-primary">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0">Extraction &amp; Machine Learning Results</h5>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1">
+                        <i class="bi bi-check-circle-fill me-1"></i> Extraction Success
+                    </span>
+                </div>
+
+                <!-- ML Classification Card -->
+                <div class="p-3 bg-light rounded border mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="stat-label">Trained ML Model Domain Prediction:</span>
+                            <h5 class="fw-bold text-primary mb-0 mt-1">{{ result.predicted_domain }}</h5>
+                            <span class="small text-muted">Model: TF-IDF + Regularized Logistic Regression (C0ldSmi1e Dataset)</span>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-primary text-white fs-6">{{ result.domain_confidence }}%</span>
+                            <div class="small text-muted mt-1">Classification Confidence</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extracted Skills Count -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold text-dark mb-0">
+                        Identified Technical Skills ({{ result.total_skills_count }})
+                    </h6>
+                    <span class="small text-success fw-semibold">
+                        +{{ result.added_count }} competencies added to your evidence profile
+                    </span>
+                </div>
+
+                <!-- Categorized Badges -->
+                <div class="mb-4">
+                    {% for cat, skills in result.by_category.items() %}
+                    <div class="mb-3">
+                        <span class="small fw-semibold text-secondary text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                            {{ cat }} ({{ skills | length }})
+                        </span>
+                        <div class="d-flex flex-wrap gap-1 mt-1">
+                            {% for s in skills %}
+                            <span class="badge bg-white text-dark border px-2 py-1 shadow-xs">
+                                <i class="bi bi-check text-success me-1"></i>{{ s }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Action Button -->
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('gap.gap_analysis') }}" class="btn btn-primary btn-sm px-3">
+                        <i class="bi bi-bullseye me-1"></i> Run Skill Gap Analysis
+                    </a>
+                    <a href="{{ url_for('portfolio.index') }}" class="btn btn-outline-secondary btn-sm px-3">
+                        <i class="bi bi-shield-check me-1"></i> View Evidence Portfolio
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="card p-5 text-center text-muted h-100 justify-content-center">
+                <i class="bi bi-file-earmark-arrow-up fs-1 text-secondary mb-3"></i>
+                <h5 class="fw-semibold text-dark">No Resume Parsed Yet</h5>
+                <p class="small text-muted mb-4 mx-auto" style="max-width: 400px;">
+                    Upload a file or click "Load Sample Resume" to extract your competencies and run domain classification.
+                </p>
+                <div>
+                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="loadSampleResume()">
+                        Load AI Engineer Sample Resume
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function loadSampleResume() {
+    const sample = `SARATHKUMAR R
+Email: sarathkumar@nexora.ai | GitHub: https://github.com/nexora
+SUMMARY:
+Aspiring AI Engineer with experience developing machine learning models, deploying RESTful APIs, and implementing deep neural networks.
+
+TECHNICAL SKILLS:
+- Languages & Core: Python, SQL, Data Structures & Algorithms, Object-Oriented Programming, Git & Version Control
+- Data Science & ML: NumPy, Pandas, Scikit-Learn, Applied Statistics, Data Visualization, Machine Learning Modeling
+- Deep Learning & NLP: PyTorch, Deep Learning, Natural Language Processing, Computer Vision
+- Backend & DevOps: Flask / FastAPI, Docker & Containerization, MLOps & Model Deployment, Cloud Computing (AWS/GCP/Azure)
+
+PROJECTS:
+1. End-to-End Customer Churn Prediction System: Built pipeline with Scikit-Learn and SHAP explainability. Wrapped in FastAPI with Docker.
+2. Transformer-Based Real-Time Sentiment Classifier: Tokenized and fine-tuned PyTorch sequence classifier with 92% accuracy.`;
+    document.getElementById("resumeTextArea").value = sample;
+}
+</script>
+{% endblock %}

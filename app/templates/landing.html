@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}SkillBridge AI — Discover Your Gaps. Master Your Skills. Prove Your Potential.{% endblock %}
+
+{% block content %}
+<div class="bg-white border-bottom py-5 mb-5">
+    <div class="container text-center py-4">
+        <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3 fw-semibold">
+            <i class="bi bi-stars me-1"></i> Team NEXORA &bull; AI Career Intelligence Platform
+        </div>
+        <h1 class="display-4 fw-bold text-dark mb-3">
+            Discover Your Gaps. <span class="text-primary">Master Your Skills.</span><br>Prove Your Potential.
+        </h1>
+        <p class="lead text-muted mx-auto mb-4" style="max-width: 760px;">
+            An end-to-end evidence-based career development platform for engineering students. Connect your demonstrated assessments, sandboxed coding challenges, and portfolio evidence to crack entry-level technology roles.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 shadow-sm">
+                <i class="bi bi-rocket-takeoff me-2"></i> Get Started Free
+            </a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-lg px-4">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Demo Candidate Sign In
+            </a>
+        </div>
+        <div class="mt-4 text-muted small">
+            Presented by <strong>SARATHKUMAR R</strong> &bull; Powered by Real O*NET Taxonomy &amp; MBPP Question Bank
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <!-- Continuous Workflow Cycle -->
+    <div class="card p-4 mb-5 border-0 shadow-sm bg-light">
+        <h5 class="fw-bold text-center text-primary mb-3">Continuous Career Intelligence Workflow</h5>
+        <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 text-center">
+            <span class="badge bg-white text-primary border py-2 px-3 fw-semibold">1. ASSESS</span>
+            <i class="bi bi-arrow-right text-muted d-none d-md-inline"></i>
+            <span class="badge bg-white text-primary border py-2 px-3 fw-semibold">2. ANALYSE</span>
+            <i class="bi bi-arrow-right text-muted d-none d-md-inline"></i>
+            <span class="badge bg-white text-primary border py-2 px-3 fw-semibold">3. IDENTIFY</span>
+            <i class="bi bi-arrow-right text-muted d-none d-md-inline"></i>
+            <span class="badge bg-white text-primary border py-2 px-3 fw-semibold">4. PRIORITISE</span>
+            <i class="bi bi-arrow-right text-muted d-none d-md-inline"></i>
+            <span class="badge bg-white text-primary border py-2 px-3 fw-semibold">5. LEARN</span>
+            <i class="bi bi-arrow-right text-muted d-none d-md-inline"></i>
+            <span class="badge bg-white text-primary border py-2 px-3 fw-semibold">6. PRACTISE</span>
+            <i class="bi bi-arrow-right text-muted d-none d-md-inline"></i>
+            <span class="badge bg-white text-primary border py-2 px-3 fw-semibold">7. REASSESS</span>
+            <i class="bi bi-arrow-right text-muted d-none d-md-inline"></i>
+            <span class="badge bg-teal text-white py-2 px-3 fw-semibold">8. IMPROVE</span>
+        </div>
+    </div>
+
+    <!-- 20 Core Features Grid -->
+    <div class="text-center mb-4">
+        <h3 class="fw-bold text-dark">20 Innovative Intelligence Modules</h3>
+        <p class="text-muted">A unified platform integrating machine learning, NLP, and verified data pipelines.</p>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-primary-subtle text-primary p-2 rounded me-3"><i class="bi bi-check2-circle fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">1. AI-Powered Skill Assessment</h6>
+                </div>
+                <p class="small text-muted mb-0">Multi-topic adaptive MCQ tests validating core theoretical competencies.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-success-subtle text-success p-2 rounded me-3"><i class="bi bi-shield-check fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">2. Evidence-Based Verification</h6>
+                </div>
+                <p class="small text-muted mb-0">Differentiates self-reported claims from verified assessment and coding proofs.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-info-subtle text-info p-2 rounded me-3"><i class="bi bi-diagram-2 fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">3. Skill Dependency Intelligence</h6>
+                </div>
+                <p class="small text-muted mb-0">DAG-based prerequisite graph with cycle detection and topological ordering.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-warning-subtle text-warning p-2 rounded me-3"><i class="bi bi-bullseye fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">4. Personalized Skill Gap Detection</h6>
+                </div>
+                <p class="small text-muted mb-0">Pinpoints missing vs sub-proficient skills for target careers with priorities.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-secondary-subtle text-secondary p-2 rounded me-3"><i class="bi bi-file-earmark-text fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">5. Smart Job Description Analyzer</h6>
+                </div>
+                <p class="small text-muted mb-0">NLP extraction separating required from preferred skills and experience levels.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-primary-subtle text-primary p-2 rounded me-3"><i class="bi bi-shuffle fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">6. Multi-Job Compatibility Engine</h6>
+                </div>
+                <p class="small text-muted mb-0">Simultaneously compares candidate profile against 5+ benchmark roles.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-success-subtle text-success p-2 rounded me-3"><i class="bi bi-speedometer2 fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">7. Explainable Readiness Score</h6>
+                </div>
+                <p class="small text-muted mb-0">Transparent 4-factor formula (Coverage, Assessment, Coding, Portfolio).</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-info-subtle text-info p-2 rounded me-3"><i class="bi bi-signpost-2 fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">8. Career Path Simulator</h6>
+                </div>
+                <p class="small text-muted mb-0">Analyzes role transitions, transferable competencies, and study hours needed.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-warning-subtle text-warning p-2 rounded me-3"><i class="bi bi-graph-up fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">9. Skill Demand Intelligence</h6>
+                </div>
+                <p class="small text-muted mb-0">Market frequency analysis derived from official O*NET 28/29 occupational data.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-primary-subtle text-primary p-2 rounded me-3"><i class="bi bi-calendar3 fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">10. AI Learning Roadmap Generator</h6>
+                </div>
+                <p class="small text-muted mb-0">Generates custom weekly study milestones tailored to study hours and gaps.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-secondary-subtle text-secondary p-2 rounded me-3"><i class="bi bi-book fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">11. Smart Resource Recommendation</h6>
+                </div>
+                <p class="small text-muted mb-0">Curated, verified tutorials and documentation ranked by difficulty and topic.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-success-subtle text-success p-2 rounded me-3"><i class="bi bi-lightbulb fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">12. AI Project Recommendation</h6>
+                </div>
+                <p class="small text-muted mb-0">End-to-end portfolio projects with validation checklists targeting specific gaps.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-info-subtle text-info p-2 rounded me-3"><i class="bi bi-sliders2 fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">13. Adaptive Learning System</h6>
+                </div>
+                <p class="small text-muted mb-0">Detects weak sub-topics and recalibrates assessment questions automatically.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-warning-subtle text-warning p-2 rounded me-3"><i class="bi bi-mic fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">14. AI Mock Interview Coach</h6>
+                </div>
+                <p class="small text-muted mb-0">Role-specific technical & scenario evaluations with key concept coverage checks.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-primary-subtle text-primary p-2 rounded me-3"><i class="bi bi-terminal fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">15. Coding Skill Analyzer</h6>
+                </div>
+                <p class="small text-muted mb-0">Sandboxed Python code execution with AST security checks on MBPP problems.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-secondary-subtle text-secondary p-2 rounded me-3"><i class="bi bi-github fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">16. Portfolio Evidence Analyzer</h6>
+                </div>
+                <p class="small text-muted mb-0">Audits Git repositories, tests, and documentation completeness scores.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-success-subtle text-success p-2 rounded me-3"><i class="bi bi-file-earmark-pdf fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">17. Skill Proof Portfolio (PDF)</h6>
+                </div>
+                <p class="small text-muted mb-0">Generates downloadable verified ReportLab PDF certificates and summaries.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-info-subtle text-info p-2 rounded me-3"><i class="bi bi-sort-numeric-down fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">18. Skill Gap Priority Optimizer</h6>
+                </div>
+                <p class="small text-muted mb-0">Ranks missing competencies by criticality, deficit, and prerequisite leverage.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-warning-subtle text-warning p-2 rounded me-3"><i class="bi bi-calculator fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">19. What-If Career Simulator</h6>
+                </div>
+                <p class="small text-muted mb-0">Interactive simulation projecting readiness gains when study hours are boosted.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-primary-subtle text-primary p-2 rounded me-3"><i class="bi bi-activity fs-5"></i></div>
+                    <h6 class="fw-bold mb-0">20. Continuous Skill Intelligence</h6>
+                </div>
+                <p class="small text-muted mb-0">Longitudinal snapshot history tracking competency growth and roadmap progress.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

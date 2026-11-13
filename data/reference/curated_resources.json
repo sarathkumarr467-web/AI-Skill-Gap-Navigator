@@ -1,0 +1,102 @@
+[
+  {
+    "skill": "Python",
+    "title": "Official Python Tutorial & Language Reference",
+    "type": "Documentation",
+    "level": "Beginner",
+    "url": "https://docs.python.org/3/tutorial/",
+    "estimated_hours": 12,
+    "is_free": true,
+    "description": "Comprehensive official documentation covering syntax, data structures, modules, and error handling."
+  },
+  {
+    "skill": "Python",
+    "title": "Real Python: Intermediate Python Tutorials",
+    "type": "Tutorial",
+    "level": "Intermediate",
+    "url": "https://realpython.com/",
+    "estimated_hours": 15,
+    "is_free": true,
+    "description": "Hands-on deep dives into decorators, generators, context managers, and concurrency."
+  },
+  {
+    "skill": "Data Structures & Algorithms",
+    "title": "Open Data Structures (Python Edition)",
+    "type": "Book / Course",
+    "level": "Intermediate",
+    "url": "https://opendatastructures.org/",
+    "estimated_hours": 30,
+    "is_free": true,
+    "description": "Rigorous treatment of arrays, skiplists, trees, heaps, and graph algorithms with complexity proofs."
+  },
+  {
+    "skill": "Scikit-Learn",
+    "title": "Scikit-Learn Official User Guide & API Reference",
+    "type": "Documentation",
+    "level": "Intermediate",
+    "url": "https://scikit-learn.org/stable/user_guide.html",
+    "estimated_hours": 20,
+    "is_free": true,
+    "description": "The definitive guide to estimators, transformers, pipelines, cross-validation, and metrics."
+  },
+  {
+    "skill": "Machine Learning Modeling",
+    "title": "Google Machine Learning Crash Course",
+    "type": "Interactive Course",
+    "level": "Beginner",
+    "url": "https://developers.google.com/machine-learning/crash-course",
+    "estimated_hours": 15,
+    "is_free": true,
+    "description": "Practical lessons on gradient descent, loss functions, classification thresholds, and embeddings."
+  },
+  {
+    "skill": "Deep Learning",
+    "title": "Deep Learning Specialization - Andrew Ng (Coursera / YouTube)",
+    "type": "Video Course",
+    "level": "Intermediate",
+    "url": "https://www.deeplearning.ai/",
+    "estimated_hours": 35,
+    "is_free": true,
+    "description": "Foundational mathematical intuition and backpropagation implementation for deep neural networks."
+  },
+  {
+    "skill": "PyTorch",
+    "title": "PyTorch Official 60-Minute Blitz & Tutorials",
+    "type": "Tutorial",
+    "level": "Intermediate",
+    "url": "https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html",
+    "estimated_hours": 10,
+    "is_free": true,
+    "description": "Tensors, autograd, neural network modules, loss functions, and optimizers."
+  },
+  {
+    "skill": "SQL",
+    "title": "PostgreSQL Official Documentation & SQL Tutorial",
+    "type": "Documentation",
+    "level": "Beginner",
+    "url": "https://www.postgresql.org/docs/current/tutorial.html",
+    "estimated_hours": 14,
+    "is_free": true,
+    "description": "Relational algebra, joins, subqueries, grouping, aggregations, and transactional integrity."
+  },
+  {
+    "skill": "Flask / FastAPI",
+    "title": "FastAPI Official Documentation & Interactive OpenAPI Tutorial",
+    "type": "Documentation",
+    "level": "Intermediate",
+    "url": "https://fastapi.tiangolo.com/tutorial/",
+    "estimated_hours": 12,
+    "is_free": true,
+    "description": "Modern API development with type hints, automatic schema generation, and asynchronous endpoints."
+  },
+  {
+    "skill": "MLOps & Model Deployment",
+    "title": "Full Stack Deep Learning - Production ML Course",
+    "type": "Course",
+    "level": "Advanced",
+    "url": "https://fullstackdeeplearning.com/",
+    "estimated_hours": 25,
+    "is_free": true,
+    "description": "Complete lifecycle: data pipelines, testing models, CI/CD, containerization, and production monitoring."
+  }
+]
