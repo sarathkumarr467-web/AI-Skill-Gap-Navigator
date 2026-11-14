@@ -757,7 +757,7 @@ Dataset ownership, attribution, and licensing remain subject to their respective
 
 <p align="center">
 
-**SkillBridge AI | Team NEXORA**
+**SkillBridge AI **
 
 *Turning Skill Gaps into Career Growth.*
 
