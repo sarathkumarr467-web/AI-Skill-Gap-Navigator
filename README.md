@@ -765,5 +765,5 @@ Dataset ownership, attribution, and licensing remain subject to their respective
 
 </p>
 PPT link:
-https://docs.google.com/presentation/d/13rtnKyJ7pdvS7HnQQBO4uYyyXTgy6KzV/edit?usp=drivesdk&ouid=110152786672007708719&rtpof=true&sd=true
-Video Link:https://drive.google.com/file/d/1QrLOv7OgLhom80lSGjgto8yUl-7wjp1M/view?usp=drivesdk
+https://docs.google.com/presentation/d/13rtnKyJ7pdvS7HnQQBO4uYyyXTgy6KzV/edit?usp=drivesdk&ouid=110152786672007708719&rtpof=true&sd=true 
+VideoLink:https://drive.google.com/file/d/1QrLOv7OgLhom80lSGjgto8yUl-7wjp1M/view?usp=drivesdk
