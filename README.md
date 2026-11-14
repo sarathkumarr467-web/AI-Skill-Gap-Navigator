@@ -6,9 +6,17 @@
 
 An AI-powered career intelligence and skill development platform that transforms skill assessments, resume analysis, coding practice, and career requirements into a personalized, evidence-driven learning journey.
 
- **Presented by SARATHKUMAR R**
+**Presented by SARATHKUMAR R**
 
 </p>
+
+---
+
+## Project Links
+
+- **GitHub Repository:** https://github.com/sarathkumarr467-web/AI-Skill-Gap-Navigator
+- **Project PPT:** https://docs.google.com/presentation/d/13rtnKyJ7pdvS7HnQQBO4uYyyXTgy6KzV/edit?usp=drivesdk
+- **Demo Video:** https://drive.google.com/file/d/1QrLOv7OgLhom80lSGjgto8yUl-7wjp1M/view?usp=drivesdk
 
 ---
 
@@ -349,7 +357,7 @@ The resume classification component uses a TF-IDF-based Logistic Regression mode
 | Weighted F1 Score | 68.23% |
 | Macro F1 Score | 10.02% |
 
-**Evaluation Interpretation**
+### Evaluation Interpretation
 
 The dataset contains 23 specialized professional categories with class imbalance.
 
@@ -441,15 +449,18 @@ Dataset licensing and usage conditions should be respected when redistributing d
 | Visualization | Chart.js 4.4 |
 | Security Analysis | Python AST |
 | Testing | Python unittest |
+| Production Server | Gunicorn |
 
 ---
 
 ## 9. Project Directory Structure
 
+The root-level Flask entry point is named `wsgi.py` for deployment compatibility.
+
 ```text
 SkillBridge-AI/
 │
-├── app.py
+├── wsgi.py
 ├── config.py
 ├── requirements.txt
 ├── .env.example
@@ -476,7 +487,8 @@ SkillBridge-AI/
 │   │   ├── gap_routes.py
 │   │   ├── analyzer_routes.py
 │   │   ├── learning_routes.py
-│   │   └── practice_routes.py
+│   │   ├── practice_routes.py
+│   │   └── portfolio_routes.py
 │   │
 │   ├── services/
 │   │   ├── assessment_service.py
@@ -592,7 +604,7 @@ python scripts/initialize_db.py
 ### Step 7: Start the Application
 
 ```bash
-python app.py
+python wsgi.py
 ```
 
 Open your browser:
@@ -603,7 +615,129 @@ Register an account or use the application's demo-login option if enabled.
 
 ---
 
-## 11. Automated Testing
+## 11. Render Deployment
+
+SkillBridge AI uses Gunicorn as its production WSGI server when deployed on Render.
+
+### Step 1: Verify the WSGI Entry Point
+
+Ensure the root-level `wsgi.py` file contains:
+
+```python
+import os
+from app import create_app
+
+app = create_app(os.environ.get("FLASK_CONFIG", "default"))
+```
+
+Keep `app/__init__.py` unchanged. It contains the Flask application factory.
+
+### Step 2: Add Gunicorn to Requirements
+
+Ensure `requirements.txt` includes:
+
+```text
+gunicorn
+```
+
+Install it locally if necessary:
+
+```bash
+python -m pip install gunicorn
+```
+
+Commit the updated requirements file.
+
+### Step 3: Push the Project to GitHub
+
+```bash
+git add .
+git commit -m "Prepare SkillBridge AI for Render deployment"
+git push origin main
+```
+
+Resolve any Git synchronization conflicts before pushing. Do not force-push over remote changes.
+
+### Step 4: Create a Render Web Service
+
+1. Open https://render.com/
+2. Sign in to your account.
+3. Select **New +**.
+4. Select **Web Service**.
+5. Connect your GitHub account if required.
+6. Select the repository:
+
+   `AI-Skill-Gap-Navigator`
+
+7. Configure the service.
+
+| Setting | Value |
+|---|---|
+| Name | skillbridge-ai |
+| Runtime | Python |
+| Branch | main |
+| Build Command | `pip install -r requirements.txt` |
+| Start Command | `gunicorn wsgi:app` |
+
+Choose an appropriate available instance plan.
+
+### Step 5: Configure Environment Variables
+
+Open the Render service's **Environment** settings.
+
+Set the configuration variables required by your application.
+
+For example:
+
+| Variable | Value |
+|---|---|
+| `FLASK_CONFIG` | `production` |
+| `SECRET_KEY` | A strong, randomly generated secret |
+
+Only add variables supported by your actual application configuration. Never expose secrets in GitHub or README files.
+
+### Step 6: Deploy
+
+1. Save the configuration.
+2. Start the deployment.
+3. Open the Render deployment logs.
+4. Check for dependency installation and application startup errors.
+5. Open the generated Render URL.
+
+Example URL format:
+
+`https://your-service-name.onrender.com`
+
+### Step 7: Verify the Application
+
+Test the following after deployment:
+
+- Landing page loads successfully.
+- User registration works.
+- Login and logout work.
+- Dashboard loads.
+- Assessment pages work.
+- Resume analysis works.
+- Skill gap analysis works.
+- Learning roadmap works.
+- Coding practice works.
+- PDF report generation works.
+
+### Important Deployment Notes
+
+**Database persistence:** SQLite databases stored on an ordinary Render service filesystem may not survive service restarts or redeployments. Use a properly configured persistent disk or migrate to a production database such as PostgreSQL before relying on permanent user records.
+
+**Uploaded files:** Resume uploads and generated reports also need persistent storage if they must survive redeployments.
+
+**Dataset availability:** Make sure the required model files and reference datasets are included in the deployment or downloaded through a reliable build/setup process.
+
+**Security:** Use a strong production secret key, protect uploaded files, and do not treat subprocess execution alone as a fully secure sandbox.
+
+**Deployment status:** Successful deployment should be confirmed by checking the Render build and runtime logs.
+
+---
+
+## 12. Automated Testing
 
 SkillBridge AI includes an automated testing suite using Python's unittest framework.
 
@@ -632,7 +766,7 @@ Testing helps validate individual modules and their integration.
 
 ---
 
-## 12. Responsible AI, Privacy & Security
+## 13. Responsible AI, Privacy & Security
 
 SkillBridge AI incorporates several mechanisms intended to support responsible and secure application behaviour.
 
@@ -678,7 +812,7 @@ Users should be informed about how their resume information is processed and sto
 
 ---
 
-## 13. What Makes SkillBridge AI Different?
+## 14. What Makes SkillBridge AI Different?
 
 | Traditional Career Preparation | SkillBridge AI |
 |---|---|
@@ -701,7 +835,7 @@ This creates a connected approach to career development rather than a collection
 
 ---
 
-## 14. Future Development Scope
+## 15. Future Development Scope
 
 Potential future enhancements include:
 
@@ -719,7 +853,7 @@ These are potential enhancements, not claims of already implemented functionalit
 
 ---
 
-## 15. Project Information & Credits
+## 16. Project Information & Credits
 
 | Field | Details |
 |---|---|
@@ -739,7 +873,7 @@ These are potential enhancements, not claims of already implemented functionalit
 
 ---
 
-## 16. Acknowledgements & Data Sources
+## 17. Acknowledgements & Data Sources
 
 We acknowledge the organizations and communities providing the datasets and technical resources used in this project:
 
@@ -757,13 +891,10 @@ Dataset ownership, attribution, and licensing remain subject to their respective
 
 <p align="center">
 
-**SkillBridge AI 
+**SkillBridge AI**
 
 *Turning Skill Gaps into Career Growth.*
 
 **Discover. Analyse. Learn. Practise. Improve.**
 
 </p>
-PPT link:
-https://docs.google.com/presentation/d/13rtnKyJ7pdvS7HnQQBO4uYyyXTgy6KzV/edit?usp=drivesdk&ouid=110152786672007708719&rtpof=true&sd=true 
-VideoLink:https://drive.google.com/file/d/1QrLOv7OgLhom80lSGjgto8yUl-7wjp1M/view?usp=drivesdk
